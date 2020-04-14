@@ -101,10 +101,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NPKeyboardView : UIView
 
-@property (assign, nonatomic) CGFloat superViewHeight;
-
-@property (assign, nonatomic) CGFloat superViewWidth;
-
 @property (weak, nonatomic) id<NPKeyboardViewDelegate> delegate;
 
 /**
@@ -112,10 +108,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)endInputing;
 
-/**
- *  旋转
- */
-- (void)rotate;
 
 @end
 

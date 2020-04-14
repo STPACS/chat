@@ -9,7 +9,6 @@
 #import "NPKeyboardView.h"
 #import "NPChatMoreView.h"
 #import "Masonry.h"
-#import "Marco.h"
 
 @interface NPKeyboardView ()<UITextViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,ChatMoreViewDelegate,ChatMoreViewDataSource>
 
@@ -119,22 +118,6 @@
     return YES;
 }
 
-- (void)textViewDidChange:(UITextView *)textView
-{
-    CGRect textViewFrame = self.textView.frame;
-    CGSize textSize = [self.textView sizeThatFits:CGSizeMake(CGRectGetWidth(textViewFrame), 1000.0f)];
-    CGFloat offset = 10;
-    textView.scrollEnabled = (textSize.height + 0.1 > kMaxHeight-offset);
-    textViewFrame.size.height = MAX(42, MIN(kMaxHeight, textSize.height));
-    
-    CGRect addBarFrame = self.frame;
-    addBarFrame.size.height = textViewFrame.size.height+offset;
-    addBarFrame.origin.y = self.superViewHeight - self.bottomHeight - addBarFrame.size.height;
-    [self setFrame:addBarFrame animated:NO];
-    if (textView.scrollEnabled) {
-        [textView scrollRangeToVisible:NSMakeRange(textView.text.length - 2, 1)];
-    }
-}
 
 #pragma mark - UIImagePickerControllerDelegate
 
@@ -222,7 +205,7 @@
 
 - (void)keyboardWillHide:(NSNotification *)notification
 {
-    self.keyboardFrame = CGRectZero;
+    self.keyboardFrame = CGRectMake(0, BottomHeight, 0, BottomHeight);
     [self textViewDidChange:self.textView];
 }
 
@@ -231,7 +214,6 @@
     self.keyboardFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     [self textViewDidChange:self.textView];
     [self updateConstraints];
-  //  [self layoutIfNeeded];
 }
 
 - (void)setup
@@ -259,7 +241,6 @@
     self.backgroundColor = [UIColor colorWithRed:235/255.0f green:236/255.0f blue:238/255.0f alpha:1.0f];
     [self updateConstraintsIfNeeded];
     
-    //FIX 修复首次初始化页面 页面显示不正确 textView不显示bug
     [self layoutIfNeeded];
 }
 
@@ -316,8 +297,6 @@
     {
         [self.delegate startRecordVoice];
     }
-
-   
 }
 
 - (void)cancelRecordVoice
@@ -326,7 +305,6 @@
     {
         [self.delegate cancelRecordVoice];
     }
- 
 }
 
 - (void)endRecordVoice
@@ -354,6 +332,29 @@
     }
 }
 
+- (void)textViewDidChange:(UITextView *)textView
+{
+    CGRect addBarFrame = self.frame;
+    addBarFrame.size.height = 45;
+    addBarFrame.origin.y = SCREEN_HEIGHT - self.bottomHeight - naviBarHeight  - addBarFrame.size.height;
+    [self setFrame:addBarFrame animated:NO];
+
+}
+
+- (CGFloat)bottomHeight
+{
+    
+    if (self.moreView.superview)
+    {
+        return MAX(self.keyboardFrame.size.height, self.moreView.frame.size.height + BottomHeight);
+    }
+    else
+    {
+        return MAX(self.keyboardFrame.size.height, CGFLOAT_MIN);
+    }
+    
+}
+
 - (void)showViewWithType:(FunctionViewShowType)showType
 {
     //显示对应的View
@@ -367,17 +368,18 @@
         {
             self.inputText = self.textView.text;
             self.textView.text = nil;
-            [self setFrame:CGRectMake(0, self.superViewHeight - npToolbarHeight - BottomHeight, self.superViewWidth, npToolbarHeight) animated:NO];
+            [self setFrame:CGRectMake(0, SCREEN_HEIGHT - BottomHeight - npToolbarHeight - naviBarHeight, SCREEN_WIDTH, npToolbarHeight) animated:NO];
             [self.textView resignFirstResponder];
             break;
         }
         case FunctionViewShowMore:
-        case FunctionViewShowFace:
         {
             self.inputText = self.textView.text;
-            [self setFrame:CGRectMake(0, self.superViewHeight - kFunctionViewHeight - BottomHeight - self.textView.frame.size.height - 10, self.superViewWidth, self.textView.frame.size.height + 10) animated:NO];
+            
+            
+            [self setFrame:CGRectMake(0, SCREEN_HEIGHT - kFunctionViewHeight - naviBarHeight  - BottomHeight - npToolbarHeight, SCREEN_WIDTH,kFunctionViewHeight + npToolbarHeight) animated:NO];
             [self.textView resignFirstResponder];
-            [self textViewDidChange:self.textView];
+//            [self textViewDidChange:self.textView];
             break;
         }
         case FunctionViewShowKeyboard:
@@ -430,14 +432,15 @@
         [self.superview addSubview:self.moreView];
         [UIView animateWithDuration:.3 animations:^
         {
-            [self.moreView setFrame:CGRectMake(0, self.superViewHeight - kFunctionViewHeight, self.superViewWidth, kFunctionViewHeight)];
+            
+            [self.moreView setFrame:CGRectMake(0, SCREEN_HEIGHT - kFunctionViewHeight - BottomHeight , SCREEN_WIDTH, kFunctionViewHeight)];
         } completion:nil];
     }
     else
     {
         [UIView animateWithDuration:.3 animations:^
         {
-            [self.moreView setFrame:CGRectMake(0, self.superViewHeight, self.superViewWidth, kFunctionViewHeight)];
+            [self.moreView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, kFunctionViewHeight)];
         }
         completion:^(BOOL finished)
         {
@@ -467,7 +470,7 @@
     
     self.inputText = @"";
     self.textView.text = @"";
-    [self setFrame:CGRectMake(0, self.superViewHeight - self.bottomHeight - npToolbarHeight, self.superViewWidth, npToolbarHeight) animated:NO];
+    [self setFrame:CGRectMake(0, SCREEN_HEIGHT - self.bottomHeight - npToolbarHeight - naviBarHeight, SCREEN_WIDTH, npToolbarHeight) animated:NO];
     [self showViewWithType:FunctionViewShowKeyboard];
 }
 
@@ -515,7 +518,7 @@
 {
     if (!_moreView)
     {
-        _moreView = [[NPChatMoreView alloc] initWithFrame:CGRectMake(0, self.superViewHeight, self.superViewWidth, kFunctionViewHeight)];
+        _moreView = [[NPChatMoreView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, kFunctionViewHeight)];
         _moreView.delegate = self;
         _moreView.dataSource = self;
         _moreView.backgroundColor = self.backgroundColor;
@@ -584,19 +587,7 @@
 }
 
 
-- (CGFloat)bottomHeight
-{
-    
-    if (self.moreView.superview)
-    {
-        return MAX(self.keyboardFrame.size.height, MAX(self.moreView.frame.size.height, self.moreView.frame.size.height));
-    }
-    else
-    {
-        return MAX(self.keyboardFrame.size.height, CGFLOAT_MIN);
-    }
-    
-}
+
 
 - (UIViewController *)rootViewController
 {

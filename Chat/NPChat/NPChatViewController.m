@@ -14,7 +14,6 @@
 #import "UITableView+FDTemplateLayoutCell.h"
 #import "NPMessageStateManager.h"
 #import "Masonry.h"
-#import "Marco.h"
 #import "NPChatTextsTableViewCell.h"
 #import "NPChatImagesTableViewCell.h"
 #import "NPChatVideosTableViewCell.h"
@@ -39,30 +38,39 @@
 
 @property (assign, nonatomic) NSInteger  pk;//数据库主键，用来控制加载个数
 
-
 @end
 
 @implementation NPChatViewController
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self bringNavigationBarToFront];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.pk = 0;
+//    //清空数据库
+//    [NPMessageItem clearTable];
     
+    self.view.backgroundColor = [UIColor colorWithHexString:@"FFFFFF"];
+    
+    self.pk = 0;
+
     _messageArray = [NSMutableArray array];
     
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.chatBar];
 
-    
+
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"模拟收消息"
                                                                                  style:UIBarButtonItemStylePlain
                                                                                 target:self
                                                                                 action:@selector(receiveMessage)];
     //加载服务器数据
-    
+
     self.page = 1;
-    
+
     [self loadData];
 
     [self setHeaderRefresh];
@@ -72,9 +80,9 @@
 - (void)setHeaderRefresh {
     __weak __typeof(&*self)weakSelf =self;
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        
+
         weakSelf.page += 1;
-      
+
         //下拉加载更多
         [weakSelf loadMore];
     }];
@@ -82,28 +90,31 @@
 
 //下拉加载历史数据,从数据库中取
 - (void)loadMore {
-    
-    NSArray *array = [NPMessageItem findByCriteria:[NSString stringWithFormat:@" WHERE pk > %ld limit 10",(long)self.pk]];
+
     self.pk += 10;
+    self.pk += 1;//多加一条，第二次从11条开始，依次。
+
+    //数据库倒序分页10条查询
+    NSArray *array = [NPMessageItem findByCriteria:[NSString stringWithFormat:@"ORDER BY pk DESC LIMIT %ld,10",(long)self.pk]];
     
     [self.tableView.mj_header endRefreshingWithCompletionBlock:^{
         if (array.count == 0) {
             self.tableView.mj_header = nil;
         }
     }];
- 
+
     for (int i = 0; i < array.count; i ++) {
-       
+
         id object = array[i];
-       
+
         [self.messageArray insertObject:object atIndex:0];
     }
-   
+
     [self.tableView reloadData];
 }
 
 - (void)loadData {
-    
+
     //获取最后一条数据
     NSArray *lastArray = [NPMessageItem findByCriteria:@"ORDER BY pk DESC LIMIT 1"];
 
@@ -113,47 +124,60 @@
         NPMessageItem *item = lastArray[0];
         kid = item.kid;
     }else {
-        kid = @"0";
+        kid = @"";
     }
-    
-    //模拟服务器数据
-    NSArray *array = [NPMessageViewModel loadDetailMessages];
 
-    //取数据库中五条数据，跟服务器数据对比去重
-    NSArray *oldArray = [[[NPMessageItem findByCriteria:[NSString stringWithFormat:@"ORDER BY pk DESC LIMIT %d",5]]reverseObjectEnumerator]allObjects];
-    
-    //去重
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    for (NPMessageItem *item in oldArray) {
-        [dict setObject:item.kid forKey:item.kid];
-    }
-    
-    NSMutableArray *newArr = [NSMutableArray array];
-     [array enumerateObjectsUsingBlock:^(NPMessageItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
-         NSString *name = [dict objectForKey:item.kid];
-         if (name.length <= 0) {
-             [newArr addObject:item];
-         }
-     }];
-    
-    if (newArr.count > 0) {
-        [NPMessageItem saveObjects:newArr];
-    }
-    
-    NSArray *displayArray = [[[NPMessageItem findByCriteria:[NSString stringWithFormat:@"ORDER BY pk DESC LIMIT %d",10]]reverseObjectEnumerator]allObjects];
-    
-    [self.tableView.mj_header endRefreshing];
-    
-    for (int i = 0; i < displayArray.count; i ++) {
+    //服务器数据
+    [[NPMessageViewModel getSearchRecommendNewsPage:1 pageSize:10 kid:@"" needOrderId:@"604960234872832"] subscribeNext:^(id  _Nullable x) {
         
-        id object = displayArray[i];
-        [self.messageArray addObject:object];
-    }
-    
-    [self.tableView reloadData];
+        if ([x isKindOfClass:[NSArray class]]) {
+            NSArray *array = x;
+            
+            //取数据库中五条数据，跟服务器数据对比去重
+               NSArray *oldArray = [[[NPMessageItem findByCriteria:[NSString stringWithFormat:@"ORDER BY pk DESC LIMIT %d",5]]reverseObjectEnumerator]allObjects];
 
-    [self scrollTableView];
+               //去重
+               NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+               for (NPMessageItem *item in oldArray) {
+                   [dict setObject:item.kid forKey:item.kid];
+               }
+
+               NSMutableArray *newArr = [NSMutableArray array];
+                [array enumerateObjectsUsingBlock:^(NPMessageItem *item, NSUInteger idx, BOOL * _Nonnull stop) {
+                    NSString *name = [dict objectForKey:item.kid];
+                    if (name.length <= 0) {
+                        [newArr addObject:item];
+                    }
+                }];
+
+               if (newArr.count > 0) {
+                   [NPMessageItem saveObjects:newArr];
+               }
+
+               NSArray *displayArray = [[[NPMessageItem findByCriteria:[NSString stringWithFormat:@"ORDER BY pk DESC LIMIT %d",10]]reverseObjectEnumerator]allObjects];
+
+               [self.tableView.mj_header endRefreshing];
+
+               for (int i = 0; i < displayArray.count; i ++) {
+
+                   id object = displayArray[i];
+                   [self.messageArray addObject:object];
+               }
+
+               [self.tableView reloadData];
+
+               [self scrollTableView];
+
+        }
+        
+        
+    }error:^(NSError * _Nullable error) {
+        
+    }];
     
+
+   
+
 }
 
 //滑动到内容底部
@@ -170,7 +194,7 @@
 
 - (void)updateViewConstraints {
     [super updateViewConstraints];
-    
+
     [self.tableView mas_remakeConstraints:^(MASConstraintMaker *make)
     {
         make.left.equalTo(self.view.mas_left);
@@ -178,7 +202,7 @@
         make.right.equalTo(self.view.mas_right);
         make.height.equalTo(@(self.view.frame.size.height - 44 - BottomHeight - naviBarHeight));
     }];
-    
+
     [self.chatBar mas_makeConstraints:^(MASConstraintMaker *make)
     {
         make.left.equalTo(self.view.mas_left);
@@ -193,7 +217,7 @@
     if (!_tableView)
     {
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - npToolbarHeight) style:UITableViewStylePlain];
-        
+
         [_tableView registerChatMessageCellClass];
         _tableView.delegate           = self;
         _tableView.dataSource         = self;
@@ -203,7 +227,7 @@
         _tableView.separatorStyle     = UITableViewCellSeparatorStyleNone;
         _tableView.showsVerticalScrollIndicator = NO;
         _tableView.showsHorizontalScrollIndicator = NO;
-      
+
     }
     return _tableView;
 }
@@ -212,9 +236,7 @@
 {
     if (!_chatBar)
     {
-        _chatBar = [[NPKeyboardView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT - npToolbarHeight - naviBarHeight, self.view.frame.size.width, npToolbarHeight)];
-        [_chatBar setSuperViewHeight:[UIScreen mainScreen].bounds.size.height - (self.navigationController.navigationBar.isTranslucent ? 0 : 64)];
-        [_chatBar setSuperViewWidth:SCREEN_WIDTH];
+        _chatBar = [[NPKeyboardView alloc] init];
         _chatBar.delegate = self;
     }
     return _chatBar;
@@ -228,7 +250,7 @@
     int a = arc4random() % 100000;
 
     NSString *str = [NSString stringWithFormat:@"%06d", a];
-    
+
     NPMessageItem *model = [[NPMessageItem alloc]init];
     model.messageType = MessageTypeText;
     model.kid = str;
@@ -241,8 +263,8 @@
 
 - (void)chatBar:(NPKeyboardView *)chatBar sendVoice:(NSString *)voiceFileName seconds:(NSTimeInterval)seconds
 {
-    
-    
+
+
 //    NSMutableDictionary *voiceMessageDict = [NSMutableDictionary dictionary];
 //    voiceMessageDict[kNPMessageConfigurationTypeKey]         = @(MessageTypeVoice);
 //    voiceMessageDict[kNPMessageConfigurationOwnerKey]        = @(MessageOwnerSelf);
@@ -281,16 +303,16 @@
     {
         return;
     }
-    
+
     [UIView animateWithDuration:.3f animations:^
     {
         [self.tableView mas_updateConstraints:^(MASConstraintMaker *make)
         {
-            make.height.equalTo(@(frame.origin.y-56));
+            make.height.equalTo(@(frame.origin.y));
         }];
-        
+
     } completion:nil];
-    
+
     [self scrollTableView];
 }
 
@@ -343,18 +365,18 @@
         case MessageTypeVoice:
         {
             NSString *voiceFileName = self.messageArray[indexPath.row][kNPMessageConfigurationVoiceKey];
-         
+
             break;
         }
         case MessageTypeImage:
-            
-       
+
+
         case MessageTypeVideo:
         {
             break;
         }
-            
-        
+
+
         default:
             break;
     }
@@ -402,7 +424,7 @@
     {
         return;
     }
-    
+
     if ((MessageTypeImage == messageCell.messageType) )
     {
 //        [(NPChatImagesTableViewCell *)messageCell setUploadProgress:progress];
@@ -411,7 +433,7 @@
     {
 //        [(NPChatVideosTableViewCell *)messageCell setUploadProgress:progress];
     }
-    
+
     dispatch_async(dispatch_get_main_queue(), ^
     {
         messageCell.messageSendState = sendState;
@@ -434,17 +456,17 @@
               make.height.equalTo(@([[UIScreen mainScreen] bounds].size.height-44 - BottomHeight));
               [self.chatBar endInputing];
           }];
-         
+
      } completion:nil];
 }
 
 - (void)addMessage:(NPMessageItem *)message
 {
     [self.messageArray addObject:message];
-    
+
     //插入数据库
     [message save];
-    
+
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.messageArray.count - 1 inSection:0];
     [self.tableView reloadData];
     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
@@ -454,27 +476,37 @@
 
 - (void)sendMessage:(NPMessageItem *)message
 {
-    //发送消息
-    [[NPMessageStateManager shareManager] setMessageSendState:MessageSendSuccess forIndex:[self.messageArray indexOfObject:message]];
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^
-//    {
-//       CGFloat progress = 0.0f;
-//       for (int i=0; i<5; i++)
-//       {
-//           dispatch_async (dispatch_get_main_queue(), ^
-//           {
-//               [self messageSendStateChanged:MessageSendStateSending withProgress:progress forIndex:[self.messageArray indexOfObject:message]];
-//           });
-//           progress += 0.2f;
-////           sleep(1);
-//       }
-//
-//       dispatch_async (dispatch_get_main_queue(), ^
-//       {
-//           [[NPMessageStateManager shareManager] setMessageSendState:MessageSendSuccess forIndex:[self.messageArray indexOfObject:message]];
-//           [self messageSendStateChanged:MessageSendSuccess withProgress:1.0f forIndex:[self.messageArray indexOfObject:message]];
-//       });
-//    });
+    
+    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    [dic setObject:@"1" forKey:@"attach"];
+    [dic setObject:message.text forKey:@"body"];
+    [dic setObject:@"1" forKey:@"createUserId"];
+    [dic setObject:@"1" forKey:@"delFlag"];
+    [dic setObject:@"1" forKey:@"eventType"];
+    [dic setObject:@"1" forKey:@"ext"];
+    [dic setObject:@"1" forKey:@"fromAccount"];
+    [dic setObject:@"1" forKey:@"fromNick"];
+    [dic setObject:@"1" forKey:@"msgTimestamp"];
+    [dic setObject:@"1" forKey:@"msgType"];
+    [dic setObject:@"1" forKey:@"msgidClient"];
+    [dic setObject:@"604960234872832" forKey:@"needOrderId"];
+    [dic setObject:@"1" forKey:@"toAccount"];
+    
+    [[NPMessageViewModel healthNeedOrderRecordMsgsDic:dic]subscribeNext:^(id  _Nullable x) {
+        
+        if (x) {
+            
+            //更新状态
+            [[NPMessageStateManager shareManager] setMessageSendState:MessageSendSuccess forIndex:[self.messageArray indexOfObject:message]];
+
+            //更新数据库中的kid
+            message.kid = [NSString stringWithFormat:@"%@",x];
+            [message update];
+            
+        }
+        
+    }];
+
 }
 
 //临时代码，模拟接收消息
@@ -506,11 +538,11 @@
 //        messageDict[kNPMessageConfigurationOwnerKey]        = @(MessageOwnerOther);
 //        messageDict[kNPMessageConfigurationVoiceSecondsKey] = @(random()%60);
 //    }
-    
+
     int a = arc4random() % 100000;
 
        NSString *str = [NSString stringWithFormat:@"%06d", a];
-       
+
        NPMessageItem *model = [[NPMessageItem alloc]init];
        model.messageType = MessageTypeText;
        model.kid = str;
@@ -534,7 +566,7 @@
     NSString *strIdentifier = [NPChatMessageTableViewCell cellIdentifierForMessageConfiguration:
                                @{kNPMessageConfigurationOwnerKey:@(message.owner),
                                  kNPMessageConfigurationTypeKey:@(message.messageType)}];
-    
+
     NPChatMessageTableViewCell *messageCell = [tableView dequeueReusableCellWithIdentifier:strIdentifier];
     [messageCell configureCellWithData:message];
     messageCell.messageReadState = [[NPMessageStateManager shareManager] messageReadStateForIndex:indexPath.row];
@@ -549,7 +581,7 @@
     NSString *strIdentifier = [NPChatMessageTableViewCell cellIdentifierForMessageConfiguration:
     @{kNPMessageConfigurationOwnerKey:@(message.owner),
       kNPMessageConfigurationTypeKey:@(message.messageType)}];
-    
+
     return [tableView fd_heightForCellWithIdentifier:strIdentifier cacheByIndexPath:indexPath configuration:^(NPChatMessageTableViewCell *cell)
             {
                 [cell configureCellWithData:message];
@@ -570,7 +602,7 @@
  *  响应快捷菜单
  */
 - (void)messageCell:(NPChatMessageTableViewCell *)messageCell withActionType:(NPChatMessageCellMenuActionType)actionType {
-    
+
 }
 
 

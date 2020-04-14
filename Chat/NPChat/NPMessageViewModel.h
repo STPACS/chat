@@ -12,12 +12,16 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface NPMessageViewModel : NSObject
-//获取历史数据
-+ (NSMutableArray *)loadDetailMessages;
+////测试获取历史数据
+//+ (NSMutableArray *)loadDetailMessages;
+//
+//+ (NSMutableArray *)loadMoreMessages;
 
-+ (NSMutableArray *)loadMoreMessages;
+//获取服务器数据
++ (RACSignal*)getSearchRecommendNewsPage:(NSInteger)page pageSize:(NSInteger)pageSize kid:(NSString*) kid needOrderId:(NSString *)needOrderId;
 
-//发送消息
+//发消息
++ (RACSignal*)healthNeedOrderRecordMsgsDic:(NSDictionary *)dic;
 
 @end
 
