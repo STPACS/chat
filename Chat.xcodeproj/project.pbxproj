@@ -65,6 +65,7 @@
 		04603F4A244DA85000C7A6D0 /* SZAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 04603F49244DA85000C7A6D0 /* SZAdapter.m */; };
 		04603F4D244DA87200C7A6D0 /* UIColor+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 04603F4C244DA87200C7A6D0 /* UIColor+Helper.m */; };
 		04603F58244DABEE00C7A6D0 /* NSString+toolkit.m in Sources */ = {isa = PBXBuildFile; fileRef = 04603F57244DABEE00C7A6D0 /* NSString+toolkit.m */; };
+		04603F5C244DAD5700C7A6D0 /* luyin_green@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04603F5B244DAD5700C7A6D0 /* luyin_green@2x.png */; };
 		5F7EB3C1A4AE93A512473771 /* libPods-Chat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E4D4374C0487612F5CF4F1 /* libPods-Chat.a */; };
 /* End PBXBuildFile section */
 
@@ -185,6 +186,7 @@
 		04603F4E244DA95E00C7A6D0 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		04603F56244DABEE00C7A6D0 /* NSString+toolkit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+toolkit.h"; sourceTree = "<group>"; };
 		04603F57244DABEE00C7A6D0 /* NSString+toolkit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+toolkit.m"; sourceTree = "<group>"; };
+		04603F5B244DAD5700C7A6D0 /* luyin_green@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "luyin_green@2x.png"; sourceTree = "<group>"; };
 		39E4D4374C0487612F5CF4F1 /* libPods-Chat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Chat.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4228640BC38A195387562E0E /* Pods-Chat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chat.debug.xcconfig"; path = "Target Support Files/Pods-Chat/Pods-Chat.debug.xcconfig"; sourceTree = "<group>"; };
 		8CF72BBB9BEDECB008C88187 /* Pods-Chat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chat.release.xcconfig"; path = "Target Support Files/Pods-Chat/Pods-Chat.release.xcconfig"; sourceTree = "<group>"; };
@@ -349,6 +351,7 @@
 			isa = PBXGroup;
 			children = (
 				04603EDC244DA5E500C7A6D0 /* message_voice_receiver_playing_1@2x.png */,
+				04603F5B244DAD5700C7A6D0 /* luyin_green@2x.png */,
 				04603EDD244DA5E500C7A6D0 /* message_receiver_background_highlight@2x.png */,
 				04603EDE244DA5E500C7A6D0 /* ic_more_function@3x.png */,
 				04603EDF244DA5E500C7A6D0 /* message_voice_sender_playing_2@3x.png */,
@@ -549,6 +552,7 @@
 				04603F26244DA5E600C7A6D0 /* message_sender_background_highlight@3x.png in Resources */,
 				044FA7572440020900F57A72 /* LaunchScreen.storyboard in Resources */,
 				04603F1D244DA5E600C7A6D0 /* message_voice_sender_playing_2@3x.png in Resources */,
+				04603F5C244DAD5700C7A6D0 /* luyin_green@2x.png in Resources */,
 				04603F1A244DA5E600C7A6D0 /* message_voice_receiver_playing_1@2x.png in Resources */,
 				04603F21244DA5E600C7A6D0 /* message_voice_receiver_playing_3@2x.png in Resources */,
 				044FA7542440020900F57A72 /* Assets.xcassets in Resources */,
