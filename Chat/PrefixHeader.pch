@@ -21,6 +21,8 @@
 
 #import "NSString+toolkit.h"
 
+#import "UIImage+ImgSize.h"
+
 
 //录音时间
 #define RECORD_TIME 60

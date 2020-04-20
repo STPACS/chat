@@ -147,9 +147,9 @@
 
     
     if (photos.count > 0) {
-//        UIImage *image = [photos[0] resetSizeOfImage];
-//
-//        [self sendImageMessage:image imageType:NO];
+        UIImage *image = [photos[0] resetSizeOfImage];
+
+        [self sendImageMessage:image imageType:NO];
     }
 
     [picker dismissViewControllerAnimated:YES completion:nil];

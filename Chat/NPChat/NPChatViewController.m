@@ -41,8 +41,6 @@
 
 @property (assign, nonatomic) NSInteger  page;//页码
 
-@property (assign, nonatomic) NSInteger  pk;//数据库主键，用来控制加载个数
-
 @property (nonatomic, copy) NSString *saveFilepath;//保存录音文件路径
 
 @property (nonatomic, copy) NSString *saveTime;//保存录音时间
@@ -99,8 +97,6 @@
     
     self.view.backgroundColor = [UIColor colorWithHexString:@"#F6F7FB"];
     
-    self.pk = 0;
-
     _messageArray = [NSMutableArray array];
     
     [self.view addSubview:self.tableView];
