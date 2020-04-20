@@ -9,21 +9,28 @@
 #import "NPKeyboardView.h"
 #import "NPChatMoreView.h"
 #import "Masonry.h"
+#import "NPVoiceView.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <AVFoundation/AVFoundation.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+// 图片视频
+#import "TZImagePickerController.h"
+#import "TZImageManager.h"
 
-@interface NPKeyboardView ()<UITextViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,ChatMoreViewDelegate,ChatMoreViewDataSource>
+@interface NPKeyboardView ()<UITextViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,ChatMoreViewDelegate,ChatMoreViewDataSource,TZImagePickerControllerDelegate,NPVoiceDelegate>
 
 @property (strong, nonatomic) UIButton *voiceButton;       /**< 切换录音模式按钮 */
-@property (strong, nonatomic) UIButton *voiceRecordButton; /**< 录音按钮 */
 
 @property (strong, nonatomic) UIButton *moreButton;        /**< 更多按钮 */
 @property (strong, nonatomic) NPChatMoreView *moreView;    /**< 当前活跃的底部view,用来指向moreView */
+@property (strong, nonatomic) NPVoiceView *voiceView;    //音频录制
 @property (strong, nonatomic) UITextView *textView;
 
 @property (assign, nonatomic, readonly) CGFloat bottomHeight;
 @property (strong, nonatomic, readonly) UIViewController *rootViewController;
 
 @property (assign, nonatomic) CGRect keyboardFrame;
-@property (copy, nonatomic) NSString *inputText;
+//@property (copy, nonatomic) NSString *inputText;
 
 @end
 
@@ -45,14 +52,15 @@
     [self.voiceButton mas_makeConstraints:^(MASConstraintMaker *make)
     {
         make.left.equalTo(self.mas_left).with.offset(10);
-        make.top.equalTo(self.mas_top).with.offset(8);
+        make.centerY.mas_equalTo(self.mas_centerY);
         make.width.equalTo(self.voiceButton.mas_height);
     }];
     
     [self.moreButton mas_makeConstraints:^(MASConstraintMaker *make)
     {
         make.right.equalTo(self.mas_right).with.offset(-10);
-        make.top.equalTo(self.mas_top).with.offset(8);
+//        make.top.equalTo(self.mas_top).with.offset(8);
+        make.centerY.mas_equalTo(self.mas_centerY);
         make.width.equalTo(self.moreButton.mas_height);
     }];
 
@@ -60,15 +68,16 @@
     {
         make.left.equalTo(self.voiceButton.mas_right).with.offset(10);
         make.right.equalTo(self.moreButton.mas_left).with.offset(-10);
-        make.top.equalTo(self.mas_top).with.offset(4);
-        make.bottom.equalTo(self.mas_bottom).with.offset(-4);
+        make.top.equalTo(self.mas_top).with.offset(7.5);
+        make.bottom.equalTo(self.mas_bottom).with.offset(- 7.5);
     }];
 }
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    
 }
 
 #pragma mark - UITextViewDelegate
@@ -103,7 +112,7 @@
             }
             textView.text = [textView.text stringByReplacingCharactersInRange:NSMakeRange(location, length) withString:@""];
             [textView setSelectedRange:NSMakeRange(location, 0)];
-            [self textViewDidChange:self.textView];
+//            [self textViewDidChange:self.textView];
             return NO;
         }
     }
@@ -115,9 +124,9 @@
     self.moreButton.selected = self.voiceButton.selected = NO;
     [self showMoreView:NO];
     [self showVoiceView:NO];
+    
     return YES;
 }
-
 
 #pragma mark - UIImagePickerControllerDelegate
 
@@ -133,6 +142,40 @@
     [self.rootViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
+// MARK: - TZImagePickerController
+- (void)imagePickerController:(TZImagePickerController *)picker didFinishPickingPhotos:(NSArray *)photos sourceAssets:(NSArray *)assets isSelectOriginalPhoto:(BOOL)isSelectOriginalPhoto {
+
+    
+    if (photos.count > 0) {
+//        UIImage *image = [photos[0] resetSizeOfImage];
+//
+//        [self sendImageMessage:image imageType:NO];
+    }
+
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+// MARK: - TZImagePickerControllerDelegate
+- (void)imagePickerController:(TZImagePickerController *)picker didFinishPickingVideo:(UIImage *)coverImage sourceAssets:(id)asset {
+//    showLoading();
+  
+    [[TZImageManager manager] getVideoOutputPathWithAsset:asset success:^(NSString *outputPath) {
+        
+//        hideLoading();
+        NSURL *videoURL = [NSURL fileURLWithPath:outputPath];
+
+        PHAsset *ass = asset;
+        [self sendVideoMessage:videoURL coverImage:coverImage duration:ass.duration];
+
+    } failure:^(NSString *errorMessage, NSError *error) {
+//        hideLoading();
+    }];
+}
+
+- (void)tz_imagePickerControllerDidCancel:(TZImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
 
 #pragma mark - ChatMoreViewDelegate & ChatMoreViewDataSource
 
@@ -143,9 +186,13 @@
         case ChatMoreItemImageAlbum:
         {
             //显示相册
-            UIImagePickerController *pickerC = [[UIImagePickerController alloc] init];
-            pickerC.delegate = self;
-            [self.rootViewController presentViewController:pickerC animated:YES completion:nil];
+            TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:1 columnNumber:4 delegate:self pushPhotoPickerVc:YES];
+            imagePickerVc.allowTakePicture = YES;
+            imagePickerVc.allowPickingImage = YES;
+            imagePickerVc.allowPickingVideo = NO;
+            imagePickerVc.modalPresentationStyle = UIModalPresentationFullScreen;
+            [self.rootViewController presentViewController:imagePickerVc animated:YES completion:nil];
+            
             break;
         }
         case ChatMoreItemImage:
@@ -165,11 +212,19 @@
         case ChatMoreItemVideoAlbum:
         {
             //显示视频相册
-            break;
-        }
-        case ChatMoreItemVideo:
-        {
-            //显示拍视频
+            TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:1 columnNumber:1 delegate:self pushPhotoPickerVc:YES];
+            imagePickerVc.allowPickingVideo = YES;
+            imagePickerVc.allowPickingImage = NO;
+            //    imagePickerVc.allowPickingOriginalPhoto = YES;
+            imagePickerVc.allowPickingGif =NO;
+            imagePickerVc.allowTakePicture = YES;
+            
+            [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto) {
+                
+            }];
+            imagePickerVc.modalPresentationStyle = UIModalPresentationFullScreen;
+            [self.rootViewController presentViewController:imagePickerVc animated:YES completion:nil];
+
             break;
         }
   
@@ -221,129 +276,81 @@
     [self addSubview:self.voiceButton];
     [self addSubview:self.moreButton];
     [self addSubview:self.textView];
-    [self.textView addSubview:self.voiceRecordButton];
-    
-    UIImageView *topLine = [[UIImageView alloc] init];
-    topLine.backgroundColor = [UIColor colorWithRed:184/255.0f green:184/255.0f blue:184/255.0f alpha:1.0f];
-    [self addSubview:topLine];
-    
-    [topLine mas_makeConstraints:^(MASConstraintMaker *make)
-    {
-        make.left.equalTo(self.mas_left);
-        make.right.equalTo(self.mas_right);
-        make.top.equalTo(self.mas_top);
-        make.height.mas_equalTo(@.5f);
-    }];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardFrameWillChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
     
-    self.backgroundColor = [UIColor colorWithRed:235/255.0f green:236/255.0f blue:238/255.0f alpha:1.0f];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(didShow:) name:UIKeyboardWillShowNotification object:nil];
+    
+    self.backgroundColor = [UIColor colorWithHexString:@"FFFFFF"];
     [self updateConstraintsIfNeeded];
     
     [self layoutIfNeeded];
 }
 
-- (void)longPressForRecord:(UILongPressGestureRecognizer *)press
-{
-    static BOOL bSend;
-    switch (press.state)
-    {
-        case UIGestureRecognizerStateBegan:
-        {
-            [self startRecordVoice];
-            break;
-        }
-        case UIGestureRecognizerStateChanged:
-        {
-            CGPoint currentPoint = [press locationInView:press.view];
-            
-            if (currentPoint.y < -50)
-            {
-                [self updateCancelRecordVoice];
-                bSend = NO;
-            }
-            else
-            {
-                bSend = YES;
-                [self updateContinueRecordVoice];
-            }
-            break;
-        }
-        case UIGestureRecognizerStateEnded:
-        case UIGestureRecognizerStateCancelled:
-        {
-            if (bSend)
-            {
-                [self endRecordVoice];
-            }
-            else
-            {
-                [self cancelRecordVoice];
-            }
-            break;
-        }
-        case UIGestureRecognizerStateFailed:
-            NSLog(@"failed");
-            break;
-        default:
-            break;
-    }
+- (void)didShow:(NSNotification *)notification {
+
+    self.keyboardFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    [self setFrame:CGRectMake(0, SCREEN_HEIGHT - self.keyboardFrame.size.height - naviBarHeight - npToolbarHeight, SCREEN_WIDTH, npToolbarHeight) animated:YES];
+
+    [self.textView becomeFirstResponder];
 }
 
-- (void)startRecordVoice
-{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(startRecordVoice)])
+#pragma mark 录音相关
+- (void)startAudio{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(startAudio)])
     {
-        [self.delegate startRecordVoice];
+        [self.delegate startAudio];
     }
-}
+}//开始录音
 
-- (void)cancelRecordVoice
-{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(cancelRecordVoice)])
+- (void)stopAudio{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(stopAudio)])
     {
-        [self.delegate cancelRecordVoice];
+        [self.delegate stopAudio];
     }
-}
+}//停止录音
 
-- (void)endRecordVoice
-{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(endRecordVoice)])
+- (void)audition{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(audition)])
+      {
+          [self.delegate audition];
+      }
+}//试听录音
+
+- (void)Stopaudition{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(Stopaudition)])
     {
-        [self.delegate endRecordVoice];
+        [self.delegate Stopaudition];
     }
+}//停止试听录音
 
-}
-
-- (void)updateCancelRecordVoice
-{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(updateCancelRecordVoice)])
+- (void)sendAudition:(NSInteger)time{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(sendAudition:)])
     {
-        [self.delegate updateCancelRecordVoice];
+        [self.delegate sendAudition:time];
     }
-}
+}//发送录音
 
-- (void)updateContinueRecordVoice
-{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(updateContinueRecordVoice)])
+- (void)cancelAction{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(cancelAction)])
     {
-        [self.delegate updateContinueRecordVoice];
+        [self.delegate cancelAction];
     }
-}
+}//取消录音
 
 - (void)textViewDidChange:(UITextView *)textView
 {
-    CGRect addBarFrame = self.frame;
-    addBarFrame.size.height = 45;
-    addBarFrame.origin.y = SCREEN_HEIGHT - self.bottomHeight - naviBarHeight  - addBarFrame.size.height;
-    [self setFrame:addBarFrame animated:NO];
-
+//    CGRect addBarFrame = self.frame;
+//    addBarFrame.size.height = npToolbarHeight;
+//
+//    addBarFrame.origin.y = SCREEN_HEIGHT - self.bottomHeight - naviBarHeight  - addBarFrame.size.height;
+//
+//    [self setFrame:addBarFrame animated:NO];
 }
 
 - (CGFloat)bottomHeight
 {
-    
     if (self.moreView.superview)
     {
         return MAX(self.keyboardFrame.size.height, self.moreView.frame.size.height + BottomHeight);
@@ -352,7 +359,6 @@
     {
         return MAX(self.keyboardFrame.size.height, CGFLOAT_MIN);
     }
-    
 }
 
 - (void)showViewWithType:(FunctionViewShowType)showType
@@ -364,28 +370,30 @@
     switch (showType)
     {
         case FunctionViewShowNothing:
-        case FunctionViewShowVoice:
         {
-            self.inputText = self.textView.text;
-            self.textView.text = nil;
-            [self setFrame:CGRectMake(0, SCREEN_HEIGHT - BottomHeight - npToolbarHeight - naviBarHeight, SCREEN_WIDTH, npToolbarHeight) animated:NO];
+//            [self setFrame:CGRectMake(0, SCREEN_HEIGHT - BottomHeight - npToolbarHeight, SCREEN_WIDTH, npToolbarHeight) animated:NO];
             [self.textView resignFirstResponder];
             break;
         }
         case FunctionViewShowMore:
         {
-            self.inputText = self.textView.text;
-            
             
             [self setFrame:CGRectMake(0, SCREEN_HEIGHT - kFunctionViewHeight - naviBarHeight  - BottomHeight - npToolbarHeight, SCREEN_WIDTH,kFunctionViewHeight + npToolbarHeight) animated:NO];
             [self.textView resignFirstResponder];
 //            [self textViewDidChange:self.textView];
             break;
         }
+            
+        case FunctionViewShowVoice:
+        {
+            
+            [self setFrame:CGRectMake(0, SCREEN_HEIGHT - kFunctionViewHeight - naviBarHeight  - BottomHeight - npToolbarHeight, SCREEN_WIDTH,kFunctionViewHeight + npToolbarHeight) animated:NO];
+            [self.textView resignFirstResponder];
+
+            break;
+        }
         case FunctionViewShowKeyboard:
-            self.textView.text = self.inputText;
-            [self textViewDidChange:self.textView];
-            self.inputText = nil;
+//            [self textViewDidChange:self.textView];
             break;
         default:
             break;
@@ -395,7 +403,6 @@
 
 - (void)buttonAction:(UIButton *)button
 {
-    self.inputText = self.textView.text;
     FunctionViewShowType showType = button.tag;
     
     //更改对应按钮的状态
@@ -417,7 +424,7 @@
     }
     else
     {
-        self.inputText = self.textView.text;
+
     }
     
     [self showViewWithType:showType];
@@ -452,8 +459,28 @@
 - (void)showVoiceView:(BOOL)isShow
 {
     self.voiceButton.selected = isShow;
-    self.voiceRecordButton.selected = isShow;
-    self.voiceRecordButton.hidden = !isShow;
+    
+    if (isShow)
+    {
+        [self.superview addSubview:self.voiceView];
+        [UIView animateWithDuration:.3 animations:^
+        {
+            
+            [self.voiceView setFrame:CGRectMake(0, SCREEN_HEIGHT - kFunctionViewHeight - BottomHeight , SCREEN_WIDTH, kFunctionViewHeight)];
+        } completion:nil];
+    }
+    else
+    {
+        [UIView animateWithDuration:.3 animations:^
+        {
+            [self.voiceView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, kFunctionViewHeight)];
+        }
+        completion:^(BOOL finished)
+        {
+            [self.voiceView removeFromSuperview];
+        }];
+    }
+    
 }
 
 - (void)sendTextMessage:(NSString *)strText
@@ -468,23 +495,9 @@
         [self.delegate chatBar:self sendMessage:strText];
     }
     
-    self.inputText = @"";
     self.textView.text = @"";
-    [self setFrame:CGRectMake(0, SCREEN_HEIGHT - self.bottomHeight - npToolbarHeight - naviBarHeight, SCREEN_WIDTH, npToolbarHeight) animated:NO];
+//    [self setFrame:CGRectMake(0, SCREEN_HEIGHT - self.bottomHeight - npToolbarHeight - naviBarHeight, SCREEN_WIDTH, npToolbarHeight) animated:NO];
     [self showViewWithType:FunctionViewShowKeyboard];
-}
-
-/**
- *  通知代理发送语音信息
- *
- *  @param seconds   语音时长
- */
-- (void)sendVoiceMessage:(NSString *)voiceFileName seconds:(NSTimeInterval)seconds
-{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(chatBar:sendVoice:seconds:)])
-    {
-        [self.delegate chatBar:self sendVoice:voiceFileName seconds:seconds];
-    }
 }
 
 /**
@@ -505,12 +518,13 @@
  *
  *  @param video 发送的视频
  */
-- (void)sendVideoMessage:(NSData *)video
+- (void)sendVideoMessage:(NSURL *)videoUrl coverImage:(UIImage *)coverImage duration:(CGFloat)duration
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(chatBar:sendVideos:)])
-    {
-        [self.delegate chatBar:self sendVideos:@[video]];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(chatBar:Message:coverImage:duration:)]) {
+        [self.delegate chatBar:self Message:videoUrl coverImage:coverImage duration:duration];
     }
+
 }
 #pragma mark - Getters方法
 
@@ -526,6 +540,17 @@
     return _moreView;
 }
 
+- (NPVoiceView *)voiceView
+{
+    if (!_voiceView)
+    {
+        _voiceView = [[NPVoiceView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, kFunctionViewHeight)];
+        _voiceView.audioDelegate = self;
+        _voiceView.backgroundColor = self.backgroundColor;
+    }
+    return _voiceView;
+}
+
 - (UITextView *)textView
 {
     if (!_textView)
@@ -534,9 +559,10 @@
         _textView.font = [UIFont systemFontOfSize:16.0f];
         _textView.delegate = self;
         _textView.layer.cornerRadius = 4.0f;
-        _textView.layer.borderColor = [UIColor colorWithRed:204.0/255.0f green:204.0/255.0f blue:204.0/255.0f alpha:1.0f].CGColor;
         _textView.returnKeyType = UIReturnKeySend;
         _textView.layer.borderWidth = .5f;
+        _textView.backgroundColor = [UIColor colorWithHexString:@"#F6F7FB"];
+        _textView.layer.borderColor = [UIColor colorWithHexString:@"#F6F7FB"].CGColor;
         _textView.layer.masksToBounds = YES;
     }
     return _textView;
@@ -548,28 +574,12 @@
     {
         _voiceButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _voiceButton.tag = FunctionViewShowVoice;
-        [_voiceButton setBackgroundImage:[UIImage imageNamed:@"chat_bar_voice_normal"] forState:UIControlStateNormal];
-        [_voiceButton setBackgroundImage:[UIImage imageNamed:@"chat_bar_input_normal"] forState:UIControlStateSelected];
+        [_voiceButton setBackgroundImage:[UIImage imageNamed:@"voice_liaotian_zhihui"] forState:UIControlStateNormal];
+        [_voiceButton setBackgroundImage:[UIImage imageNamed:@"voice_liaotian_zhihui"] forState:UIControlStateSelected];
         [_voiceButton addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
         [_voiceButton sizeToFit];
     }
     return _voiceButton;
-}
-
-- (UIButton *)voiceRecordButton
-{
-    if (!_voiceRecordButton) {
-        _voiceRecordButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _voiceRecordButton.hidden = YES;
-        _voiceRecordButton.frame = self.textView.bounds;
-        _voiceRecordButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        [_voiceRecordButton setBackgroundColor:[UIColor lightGrayColor]];
-        _voiceRecordButton.titleLabel.font = [UIFont systemFontOfSize:14.0f];
-        [_voiceRecordButton setTitle:@"按住说话" forState:UIControlStateNormal];
-        UILongPressGestureRecognizer *presss = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressForRecord:)];
-        [_voiceRecordButton addGestureRecognizer:presss];
-    }
-    return _voiceRecordButton;
 }
 
 - (UIButton *)moreButton
@@ -578,8 +588,8 @@
     {
         _moreButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _moreButton.tag = FunctionViewShowMore;
-        [_moreButton setBackgroundImage:[UIImage imageNamed:@"chat_bar_more_normal"] forState:UIControlStateNormal];
-        [_moreButton setBackgroundImage:[UIImage imageNamed:@"chat_bar_input_normal"] forState:UIControlStateSelected];
+        [_moreButton setBackgroundImage:[UIImage imageNamed:@"ic_more_function"] forState:UIControlStateNormal];
+        [_moreButton setBackgroundImage:[UIImage imageNamed:@"ic_more_function"] forState:UIControlStateSelected];
         [_moreButton addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
         [_moreButton sizeToFit];
     }

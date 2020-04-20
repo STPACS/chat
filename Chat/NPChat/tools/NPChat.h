@@ -38,6 +38,9 @@ typedef NS_ENUM(NSUInteger, NPMessageType)
   
 };
 
+//TEXT ：文本消息 PICTURE ：图片消息 AUDIO ：语音消息 VIDEO ：视频消息 LOCATION ：地理位置 NOTIFICATION ：通知 FILE ：文件消息 TIPS ：提示类型消息 CUSTOM ：自定义消息
+
+
 /**
  *  消息发送状态,自己发送的消息时有
  */
@@ -46,16 +49,6 @@ typedef NS_ENUM(NSUInteger, NPMessageSendState)
     MessageSendSuccess = 0,  /**< 消息发送成功 */
     MessageSendStateSending, /**< 消息发送中 */
     MessageSendFail,          /**< 消息发送失败 */
-};
-
-/**
- *  消息读取状态,接收的消息时有
- */
-typedef NS_ENUM(NSUInteger, NPMessageReadState)
-{
-    MessageUnRead = 0, /**< 消息未读 */
-    MessageReading,   /**< 正在接收 */
-    MessageReaded,     /**< 消息已读 */
 };
 
 /**

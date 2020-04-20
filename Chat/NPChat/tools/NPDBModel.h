@@ -53,6 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
  * 没有记录，则保存
  */
 - (BOOL)saveOrUpdateByColumnName:(NSString*)columnName AndColumnValue:(NSString*)columnValue;
+
 /** 保存单个数据 */
 - (BOOL)save;
 /** 批量保存数据 */
@@ -99,7 +100,6 @@ NS_ASSUME_NONNULL_BEGIN
 /** 如果子类中有一些property不需要创建数据库字段，那么这个方法必须在子类中重写
  */
 + (NSArray *)transients;
-
 
 @end
 

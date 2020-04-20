@@ -63,11 +63,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIImageView *headImageView;
 
 //消息内容
-@property (nonatomic, strong) NPContentView *messageContentView;
+@property (nonatomic, strong) UIView *messageContentView;
 
-@property (nonatomic, strong) UIImageView *messageReadStateImageView;
-
-@property (nonatomic, strong) UIButton *messageResendButton;
 
 @property (nonatomic, strong) UIButton *messageCancelButton;
 
@@ -97,16 +94,13 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign, readonly) NPMessageOwner messageOwner;
 
+@property (nonatomic, assign) NPMessageItem *item;
+
 /**
+ *
  *  消息发送状态,当状态为MessageSendFail或MessageSendStateSending时,messageSendStateImageView显示
  */
 @property (nonatomic, assign) NPMessageSendState messageSendState;
-
-/**
- *  消息阅读状态,当状态为MessageUnRead时,messageReadStateImageView显示
- */
-@property (nonatomic, assign) NPMessageReadState messageReadState;
-
 
 #pragma mark - 公有方法
 

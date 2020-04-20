@@ -14,7 +14,6 @@ typedef NS_ENUM(NSUInteger, ChatMoreItemType)
 {
     ChatMoreItemImage = 0, /**< 显示拍照 */
     ChatMoreItemImageAlbum,/**< 显示相册 */
-    ChatMoreItemVideo ,    /**< 显示拍视频 */
     ChatMoreItemVideoAlbum,/**< 显示视频相册 */
     ChatMoreItemLocation,  /**< 显示地理位置 */
     ChatMoreVoiceCall,     /**< 音频呼叫 */

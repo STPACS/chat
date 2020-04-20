@@ -22,6 +22,8 @@
 {
     if ([super initWithFrame:frame])
     {
+        self.backgroundColor = [UIColor colorWithHexString:@"#F6F7FB"];
+        
         [self setup];
     }
     return self;
@@ -40,25 +42,28 @@
     
     [self.button mas_makeConstraints:^(MASConstraintMaker *make)
     {
-        make.top.equalTo(self.mas_top).with.offset(4);
-        make.centerX.equalTo(self.mas_centerX);
-        make.width.equalTo(@50);
-        make.height.equalTo(@50);
+//        make.left.equalTo(self.mas_left).with.offset(34);
+//        make.centerY.mas_equalTo(self.mas_centerY);
+//        make.width.mas_equalTo(real(23.5));
+//        make.height.mas_equalTo(real(18));
+        make.edges.mas_equalTo(UIEdgeInsetsMake(0, 0, 0, 0));
     }];
     
-    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make)
-    {
-        make.top.equalTo(self.button.mas_bottom).with.offset(3);
-        make.centerX.equalTo(self.mas_centerX);
-    }];
+//    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make)
+//    {
+//        make.left.equalTo(self.button.mas_right).with.offset(10.5);
+//        make.centerY.equalTo(self.mas_centerY);
+//    }];
 }
 
 #pragma mark - 公有方法
 
 - (void)fillViewWithTitle:(NSString *)strTitle imageName:(NSString *)strImageName
 {
-    self.titleLabel.text = strTitle;
-    [self.button setBackgroundImage:[UIImage imageNamed:strImageName] forState:UIControlStateNormal];
+//    self.titleLabel.text = strTitle;
+    [self.button setImage:[UIImage imageNamed:strImageName] forState:UIControlStateNormal];
+    [self.button setTitle:strTitle forState:UIControlStateNormal];
+//    [self.button setBackgroundImage:[UIImage imageNamed:strImageName] forState:UIControlStateNormal];
     [self updateConstraintsIfNeeded];
 }
 
@@ -67,7 +72,7 @@
 - (void)setup
 {
     [self addSubview:self.button];
-    [self addSubview:self.titleLabel];
+//    [self addSubview:self.titleLabel];
     [self updateConstraintsIfNeeded];
 }
 
@@ -94,6 +99,11 @@
     {
         _button = [UIButton buttonWithType:UIButtonTypeCustom];
         [_button addTarget:self action:@selector(buttonAction) forControlEvents:UIControlEventTouchUpInside];
+        _button.titleLabel.font = [UIFont boldSystemFontOfSize:real(15)];
+        [_button setTitleColor:[UIColor colorWithHexString:@"#666D92"] forState:UIControlStateNormal];
+//        _titleLabel.textColor = [UIColor colorWithHexString:@"#666D92"];
+//        _button.titleEdgeInsets = UIEdgeInsetsMake(0, real(20), 0, 0);
+//        [_button sz_layoutWithMargin:real(5)];
     }
     return _button;
 }
@@ -103,8 +113,8 @@
     if (!_titleLabel)
     {
         _titleLabel = [[UILabel alloc] init];
-        _titleLabel.font = [UIFont systemFontOfSize:13.0f];
-        _titleLabel.textColor = [UIColor darkTextColor];
+        _titleLabel.font = [UIFont systemFontOfSize:real(15)];
+        _titleLabel.textColor = [UIColor colorWithHexString:@"#666D92"];
     }
     return _titleLabel;
 }

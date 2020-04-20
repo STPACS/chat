@@ -47,4 +47,9 @@
 #define   SCREEN_MAX_LENGTH   (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
 #define   SCREEN_MIN_LENGTH   (MIN(SCREEN_WIDTH, SCREEN_HEIGHT))
 
+#import <Masonry.h>
+#import "SZAdapter.h"
+#import "UIColor+Helper.h"
+
+
 #endif /* Marco_h */

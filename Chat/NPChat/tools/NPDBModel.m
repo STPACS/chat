@@ -12,6 +12,7 @@
 #import "NPDBModel.h"
 #import "NPDBHelper.h"
 #import <objc/runtime.h>
+#import "NPDBTableHelper.h"
 
 @implementation NPDBModel
 #pragma mark - override method
@@ -109,7 +110,7 @@
     __block BOOL res = NO;
     NPDBHelper *jkDB = [NPDBHelper shareInstance];
     [jkDB.dbQueue inDatabase:^(FMDatabase *db) {
-        NSString *tableName = NSStringFromClass(self.class);
+        NSString *tableName = [NPDBTableHelper shareInstance].tbName;
          res = [db tableExists:tableName];
     }];
     return res;
@@ -121,7 +122,7 @@
     NPDBHelper *jkDB = [NPDBHelper shareInstance];
     NSMutableArray *columns = [NSMutableArray array];
      [jkDB.dbQueue inDatabase:^(FMDatabase *db) {
-         NSString *tableName = NSStringFromClass(self.class);
+         NSString *tableName = [NPDBTableHelper shareInstance].tbName;
          FMResultSet *resultSet = [db getTableSchema:tableName];
          while ([resultSet next]) {
              NSString *column = [resultSet stringForColumn:@"name"];
@@ -139,8 +140,9 @@
 {
     __block BOOL res = YES;
     NPDBHelper *jkDB = [NPDBHelper shareInstance];
+    
     [jkDB.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-        NSString *tableName = NSStringFromClass(self.class);
+        NSString *tableName = [NPDBTableHelper shareInstance].tbName;
         NSString *columeAndType = [self.class getColumeAndTypeString];
         NSString *sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@(%@);",tableName,columeAndType];
         if (![db executeUpdate:sql]) {
@@ -246,9 +248,10 @@
     }
 }
 
+
 - (BOOL)save
 {
-    NSString *tableName = NSStringFromClass(self.class);
+    NSString *tableName = [NPDBTableHelper shareInstance].tbName;
     NSMutableString *keyString = [NSMutableString string];
     NSMutableString *valueString = [NSMutableString string];
     NSMutableArray *insertValues = [NSMutableArray  array];
@@ -295,7 +298,7 @@
     // 如果要支持事务
     [jkDB.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         for (NPDBModel *model in array) {
-            NSString *tableName = NSStringFromClass(model.class);
+            NSString *tableName = [NPDBTableHelper shareInstance].tbName;
             NSMutableString *keyString = [NSMutableString string];
             NSMutableString *valueString = [NSMutableString string];
             NSMutableArray *insertValues = [NSMutableArray  array];
@@ -335,7 +338,7 @@
     NPDBHelper *jkDB = [NPDBHelper shareInstance];
     __block BOOL res = NO;
     [jkDB.dbQueue inDatabase:^(FMDatabase *db) {
-        NSString *tableName = NSStringFromClass(self.class);
+        NSString *tableName = [NPDBTableHelper shareInstance].tbName;
         id primaryValue = [self valueForKey:primaryId];
         if (!primaryValue || primaryValue <= 0) {
             return ;
@@ -378,7 +381,7 @@
     // 如果要支持事务
     [jkDB.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         for (NPDBModel *model in array) {
-            NSString *tableName = NSStringFromClass(model.class);
+            NSString *tableName = [NPDBTableHelper shareInstance].tbName;
             id primaryValue = [model valueForKey:primaryId];
             if (!primaryValue || primaryValue <= 0) {
                 res = NO;
@@ -424,7 +427,7 @@
     NPDBHelper *jkDB = [NPDBHelper shareInstance];
     __block BOOL res = NO;
     [jkDB.dbQueue inDatabase:^(FMDatabase *db) {
-        NSString *tableName = NSStringFromClass(self.class);
+        NSString *tableName = [NPDBTableHelper shareInstance].tbName;
         id primaryValue = [self valueForKey:primaryId];
         if (!primaryValue || primaryValue <= 0) {
             return ;
@@ -450,7 +453,7 @@
     // 如果要支持事务
     [jkDB.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         for (NPDBModel *model in array) {
-            NSString *tableName = NSStringFromClass(model.class);
+            NSString *tableName = [NPDBTableHelper shareInstance].tbName;
             id primaryValue = [model valueForKey:primaryId];
             if (!primaryValue || primaryValue <= 0) {
                 return ;
@@ -475,7 +478,7 @@
     NPDBHelper *jkDB = [NPDBHelper shareInstance];
     __block BOOL res = NO;
     [jkDB.dbQueue inDatabase:^(FMDatabase *db) {
-        NSString *tableName = NSStringFromClass(self.class);
+        NSString *tableName = [NPDBTableHelper shareInstance].tbName;
         NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ %@ ",tableName,criteria];
         res = [db executeUpdate:sql];
         NSLog(res?@"删除成功":@"删除失败");
@@ -500,7 +503,7 @@
     NPDBHelper *jkDB = [NPDBHelper shareInstance];
     __block BOOL res = NO;
     [jkDB.dbQueue inDatabase:^(FMDatabase *db) {
-        NSString *tableName = NSStringFromClass(self.class);
+        NSString *tableName = [NPDBTableHelper shareInstance].tbName;
         NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@",tableName];
         res = [db executeUpdate:sql];
         NSLog(res?@"清空成功":@"清空失败");
@@ -515,7 +518,7 @@
     NPDBHelper *jkDB = [NPDBHelper shareInstance];
     NSMutableArray *users = [NSMutableArray array];
     [jkDB.dbQueue inDatabase:^(FMDatabase *db) {
-        NSString *tableName = NSStringFromClass(self.class);
+        NSString *tableName = [NPDBTableHelper shareInstance].tbName;
         NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@",tableName];
         FMResultSet *resultSet = [db executeQuery:sql];
         while ([resultSet next]) {
@@ -582,7 +585,7 @@
     NPDBHelper *jkDB = [NPDBHelper shareInstance];
     NSMutableArray *users = [NSMutableArray array];
     [jkDB.dbQueue inDatabase:^(FMDatabase *db) {
-        NSString *tableName = NSStringFromClass(self.class);
+        NSString *tableName = [NPDBTableHelper shareInstance].tbName;
         NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@ %@",tableName,criteria];
         FMResultSet *resultSet = [db executeQuery:sql];
         while ([resultSet next]) {

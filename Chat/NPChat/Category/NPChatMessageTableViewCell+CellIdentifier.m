@@ -42,7 +42,8 @@
             strTypeKey = @"VoiceMessage";
             break;
         case MessageTypeImage:
-       
+            strTypeKey = @"ImageMessage";
+            break;
         case MessageTypeVideo:
             strTypeKey = @"VideoMessage";
             break;
@@ -59,10 +60,7 @@
             break;
     }
     
-
-    
     return [NSString stringWithFormat:@"%@_%@_%@_%@",strIdentifierKey,strOwnerKey,strTypeKey,@"SingleCell"];
 }
-
 
 @end

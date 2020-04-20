@@ -12,7 +12,6 @@
 
 @interface NPMessageStateManager ()
 
-@property (nonatomic, strong) NSMutableDictionary *messageReadStateDict;
 @property (nonatomic, strong) NSMutableDictionary *messageSendStateDict;
 
 @end
@@ -34,7 +33,6 @@
 {
     if ([super init])
     {
-        _messageReadStateDict = [NSMutableDictionary dictionary];
         _messageSendStateDict = [NSMutableDictionary dictionary];
     }
     return self;
@@ -52,29 +50,14 @@
     return MessageSendSuccess;
 }
 
-- (NPMessageReadState)messageReadStateForIndex:(NSUInteger)index
-{
-    if (_messageReadStateDict[@(index)])
-    {
-        return [_messageReadStateDict[@(index)] integerValue];
-    }
-    return MessageReaded;
-}
-
 - (void)setMessageSendState:(NPMessageSendState)messageSendState forIndex:(NSUInteger)index
 {
     _messageSendStateDict[@(index)] = @(messageSendState);
 }
 
-- (void)setMessageReadState:(NPMessageReadState)messageReadState forIndex:(NSUInteger)index
-{
-    _messageReadStateDict[@(index)] = @(messageReadState);
-}
-
 - (void)cleanState
 {
     [_messageSendStateDict removeAllObjects];
-    [_messageReadStateDict removeAllObjects];
 }
 
 

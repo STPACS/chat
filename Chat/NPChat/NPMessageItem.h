@@ -13,21 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NPMessageItem : NPDBModel
 
-@property (nonatomic, copy) NSString *image;
-
-@property (nonatomic, copy) NSString *text;
-
-@property (nonatomic, assign) NSInteger durtion;
-
-
-@property (nonatomic, assign) NSUInteger messageType;
-
-@property (nonatomic, assign) NSUInteger owner;
-
-@property (nonatomic, copy) NSString *redstatus;
-
-@property (nonatomic, copy) NSString *sendstatus;
-
 
 
 //以上为demo测试
@@ -55,6 +40,23 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *body;//消息内容
 @property (nonatomic, copy) NSString *attach;//消息附件
 @property (nonatomic, copy) NSString *kid;
+
+
+@property (nonatomic, copy) NSString *image;
+
+@property (nonatomic, copy) NSString *text;
+
+@property (nonatomic, assign) NSInteger durtion;
+
+
+@property (nonatomic, assign) NSUInteger messageType;
+
+@property (nonatomic, assign) NSUInteger owner;
+
+@property (nonatomic, copy) NSString *redstatus;
+
+@property (nonatomic, copy) NSString *sendstatus;
+
 
 
 @end

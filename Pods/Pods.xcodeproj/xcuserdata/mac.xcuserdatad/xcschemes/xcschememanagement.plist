@@ -53,21 +53,21 @@
 			<key>orderHint</key>
 			<integer>6</integer>
 		</dict>
-		<key>UIColor+SKYExtension.xcscheme</key>
+		<key>TZImagePickerController.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
 			<integer>7</integer>
 		</dict>
-		<key>UIImage+SKYExtension.xcscheme</key>
+		<key>UIColor+SKYExtension.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
 			<integer>8</integer>
 		</dict>
-		<key>YYCache.xcscheme</key>
+		<key>UIImage+SKYExtension.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

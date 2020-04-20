@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface NPChatImagesTableViewCell : NPChatMessageTableViewCell
+@property (nonatomic, strong) UIImageView *messageImageView;
 
 - (void)setUploadProgress:(CGFloat)uploadProgress;
 

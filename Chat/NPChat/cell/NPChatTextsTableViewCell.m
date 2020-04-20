@@ -11,6 +11,7 @@
 #import "NPChatTextsTableViewCell.h"
 #import "Masonry.h"
 #import "NPMessageItem.h"
+#import "UIColor+Helper.h"
 
 @interface NPChatTextsTableViewCell ()
 
@@ -27,9 +28,10 @@
 - (void)updateConstraints
 {
     [super updateConstraints];
-    [self.messageTextL mas_makeConstraints:^(MASConstraintMaker *make)
+    [self.messageTextL mas_remakeConstraints:^(MASConstraintMaker *make)
     {
-        make.edges.equalTo(self.messageContentView).with.insets(UIEdgeInsetsMake(8, 16, 8, 16));
+//        make.edges.equalTo(self.messageContentView).with.insets(UIEdgeInsetsMake(8, 16, 8, 16));
+        make.edges.mas_equalTo(UIEdgeInsetsMake(8, 16, 8, 16));
     }];
 }
 
@@ -47,7 +49,7 @@
     
     NPMessageItem *item = data;
     
-    NSMutableAttributedString *attrS = [[NSMutableAttributedString alloc ]initWithString:item.text];
+    NSMutableAttributedString *attrS = [[NSMutableAttributedString alloc ]initWithString:item.body?item.body:@""];
     [attrS addAttributes:self.textStyle range:NSMakeRange(0, attrS.length)];
     self.messageTextL.attributedText = attrS;
 }
@@ -72,13 +74,15 @@
     if (!_textStyle)
     {
         UIFont *font = [UIFont systemFontOfSize:14.0f];
+        
+        UIColor *color = self.messageOwner == MessageOwnerSelf ? [UIColor colorWithHexString:@"FFFFFF"] : [UIColor colorWithHexString:@"000000"];
+        
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-      //  style.alignment = self.messageOwner == MessageOwnerSelf ? NSTextAlignmentRight : NSTextAlignmentLeft;
         style.alignment = NSTextAlignmentLeft;
         style.paragraphSpacing = 0.25 * font.lineHeight;
         style.hyphenationFactor = 1.0;
         _textStyle = @{NSFontAttributeName: font,
-                 NSParagraphStyleAttributeName: style};
+                       NSParagraphStyleAttributeName: style,NSForegroundColorAttributeName:color};
     }
     return _textStyle;
 }

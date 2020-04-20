@@ -11,7 +11,6 @@
 #import "NPChat.h"
 
 @interface NPChatImagesTableViewCell()
-@property (nonatomic, strong) UIImageView *messageImageView;
 
 
 @end
@@ -21,23 +20,33 @@
 - (void)updateConstraints
 {
     [super updateConstraints];
+    
+    [self.messageContentView mas_updateConstraints:^(MASConstraintMaker *make)
+    {
+       make.width.equalTo(@(150));
+    }];
+    
     [self.messageImageView mas_makeConstraints:^(MASConstraintMaker *make)
     {
         make.edges.equalTo(self.messageContentView);
         make.height.lessThanOrEqualTo(@150);
     }];
-    
-    [self.messageContentView mas_updateConstraints:^(MASConstraintMaker *make)
-     {
-        make.width.equalTo(@(150));
-     }];
 }
+
+//- (void)layoutSubviews{
+//    [super layoutSubviews];
+//    CALayer *layer              = self.messageContentBackgroundImageView.layer;
+//    layer.frame                 = self.messageImageView.frame;
+//    self.messageImageView.layer.mask = layer;
+//  
+//}
 
 #pragma mark - 公有方法
 
 - (void)setup
 {
     [self.messageContentView addSubview:self.messageImageView];
+
     [super setup];
 }
 
@@ -45,16 +54,21 @@
 {
     [super configureCellWithData:data];
     NPMessageItem *item = data;
-
-    if ([item.image isKindOfClass:[NSString class]])
+    
+    if ([item.attach isKindOfClass:[NSString class]])
     {
-        self.messageImageView.image = [UIImage imageNamed:item.image];
+        
+        NSDictionary *dic = [NSDictionary dictionaryWithJsonString:item.attach];
+        
+        [self.messageImageView sd_setImageWithURL:[NSURL URLWithString:[dic objectForKey:@"url"]]];
     }
  
     else
     {
         NSLog(@"未知的图片类型");
     }
+    
+    
 }
 
 
@@ -91,7 +105,7 @@
     if (!_messageImageView)
     {
         _messageImageView = [[UIImageView alloc] init];
-        _messageImageView.contentMode = UIViewContentModeScaleAspectFill;
+//        _messageImageView.contentMode = UIViewContentModeScaleAspectFill;
     }
     return _messageImageView;
     

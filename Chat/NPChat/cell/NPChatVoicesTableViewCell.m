@@ -10,10 +10,13 @@
 
 #import "NPChatVoicesTableViewCell.h"
 #import <Masonry.h>
+#import "NPVoicePointAnimationView.h"
+#import "SZAdapter.h"
+#import "NSDictionary+NP.h"
 
 @interface NPChatVoicesTableViewCell ()
 
-@property (nonatomic, strong) UIImageView *messageVoiceStatusIV;
+@property (nonatomic, strong) NPVoicePointAnimationView *messageVoiceStatusIV;
 @property (nonatomic, strong) UILabel *messageVoiceSecondsL;
 @property (nonatomic, strong) UIActivityIndicatorView *messageIndicatorV;
 
@@ -40,6 +43,7 @@
         {
             make.right.equalTo(self.messageContentView.mas_right).with.offset(-12);
             make.centerY.equalTo(self.messageContentView.mas_centerY);
+            make.size.mas_equalTo(CGSizeMake(real(20), real(20)));
         }];
         [self.messageVoiceSecondsL mas_makeConstraints:^(MASConstraintMaker *make)
         {
@@ -59,6 +63,8 @@
         {
             make.left.equalTo(self.messageContentView.mas_left).with.offset(12);
             make.centerY.equalTo(self.messageContentView.mas_centerY);
+            make.size.mas_equalTo(CGSizeMake(real(20), real(20)));
+
         }];
         
         [self.messageVoiceSecondsL mas_makeConstraints:^(MASConstraintMaker *make)
@@ -81,6 +87,7 @@
 {
     [self.messageContentView addSubview:self.messageVoiceSecondsL];
     [self.messageContentView addSubview:self.messageVoiceStatusIV];
+    self.messageVoiceStatusIV.userInteractionEnabled = NO;
     [self.messageContentView addSubview:self.messageIndicatorV];
     [super setup];
     self.voiceMessageState = VoiceMessageStateNormal;
@@ -91,33 +98,27 @@
     [super configureCellWithData:data];
     
     NPMessageItem *item = data;
-
     
-    if (item.durtion)
+    NSDictionary *dic = [NSDictionary dictionaryWithJsonString:item.attach];
+    
+    [self.messageContentView mas_updateConstraints:^(MASConstraintMaker *make)
     {
-        [self.messageContentView mas_updateConstraints:^(MASConstraintMaker *make)
-         {
-             make.width.equalTo(@(60 + item.durtion  *3));
-         }];
-    }
+        make.width.equalTo(@(60 + MIN(20, [[dic objectForKey:@"dur"] floatValue]  *3)));
+    }];
     
-    self.messageVoiceSecondsL.text = [NSString stringWithFormat:@"%ld''",item.durtion];
+    self.messageVoiceSecondsL.text = [NSString stringWithFormat:@"%ld''",[[dic objectForKey:@"dur"] integerValue]];
+    self.messageVoiceSecondsL.textColor = self.messageOwner == MessageOwnerSelf ?[UIColor colorWithHexString:@"FFFFFF"]:[UIColor colorWithHexString:@"000000"];
 }
 
 #pragma mark - Getters方法
 
-- (UIImageView *)messageVoiceStatusIV
+- (NPVoicePointAnimationView *)messageVoiceStatusIV
 {
     if (!_messageVoiceStatusIV)
     {
-        _messageVoiceStatusIV = [[UIImageView alloc] init];
-        _messageVoiceStatusIV.image = self.messageOwner != MessageOwnerSelf ? [UIImage imageNamed:@"message_voice_receiver_normal"] : [UIImage imageNamed:@"message_voice_sender_normal"];
-        UIImage *image1 = [UIImage imageNamed:self.messageOwner == MessageOwnerSelf ? @"message_voice_sender_playing_1" : @"message_voice_receiver_playing_1"];
-        UIImage *image2 = [UIImage imageNamed:self.messageOwner == MessageOwnerSelf ? @"message_voice_sender_playing_2" : @"message_voice_receiver_playing_2"];
-        UIImage *image3 = [UIImage imageNamed:self.messageOwner == MessageOwnerSelf ? @"message_voice_sender_playing_3" : @"message_voice_receiver_playing_3"];
-        _messageVoiceStatusIV.highlightedAnimationImages = @[image1,image2,image3];
-        _messageVoiceStatusIV.animationDuration = 1.5f;
-        _messageVoiceStatusIV.animationRepeatCount = NSUIntegerMax;
+        _messageVoiceStatusIV = [[NPVoicePointAnimationView alloc] init];
+        _messageVoiceStatusIV.message_self = self.messageOwner == MessageOwnerSelf ;
+
     }
     return _messageVoiceStatusIV;
 }
@@ -156,10 +157,11 @@
     self.messageIndicatorV.hidden = YES;
     [self.messageIndicatorV stopAnimating];
     
+    
     if (_voiceMessageState == VoiceMessageStatePlaying)
     {
-        self.messageVoiceStatusIV.highlighted = YES;
-        [self.messageVoiceStatusIV startAnimating];
+          self.messageVoiceStatusIV.show_animation = YES;
+
     }
     else if (_voiceMessageState == VoiceMessageStateDownloading)
     {
@@ -170,8 +172,7 @@
     }
     else
     {
-        self.messageVoiceStatusIV.highlighted = NO;
-        [self.messageVoiceStatusIV stopAnimating];
+        self.messageVoiceStatusIV.stop = YES;
     }
 }
 

@@ -19,7 +19,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSString *)dbPath;
 
+
+
 - (BOOL)changeDBWithDirectoryName:(NSString *)directoryName;
+
+//切换表
+- (BOOL)changetable;
+
+
 @end
 
 NS_ASSUME_NONNULL_END

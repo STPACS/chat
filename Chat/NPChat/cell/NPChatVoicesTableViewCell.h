@@ -8,6 +8,7 @@
 
 #import "NPChatMessageTableViewCell.h"
 #import "NPChat.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface NPChatVoicesTableViewCell : NPChatMessageTableViewCell

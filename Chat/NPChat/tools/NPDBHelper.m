@@ -46,6 +46,9 @@ static NPDBHelper *_instance = nil;
         [filemanage createDirectoryAtPath:docsdir withIntermediateDirectories:YES attributes:nil error:nil];
     }
     NSString *dbpath = [docsdir stringByAppendingPathComponent:@"npdb.sqlite"];
+    
+    NSLog(@"dbpath:%@",dbpath);
+    
     return dbpath;
 }
 
@@ -86,6 +89,28 @@ static NPDBHelper *_instance = nil;
         free(classes);
     }
     
+    return YES;
+}
+
+//切换表
+- (BOOL)changetable{
+    
+    int numClasses;
+       Class *classes = NULL;
+       numClasses = objc_getClassList(NULL,0);
+       
+       if (numClasses >0 )
+       {
+           classes = (__unsafe_unretained Class *)malloc(sizeof(Class) * numClasses);
+           numClasses = objc_getClassList(classes, numClasses);
+           for (int i = 0; i < numClasses; i++) {
+               if (class_getSuperclass(classes[i]) == [NPDBModel class]){
+                   id class = classes[i];
+                   [class performSelector:@selector(createTable) withObject:nil];
+               }
+           }
+           free(classes);
+       }
     return YES;
 }
 

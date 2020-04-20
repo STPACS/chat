@@ -7,7 +7,7 @@
 //
 
 #define kMaxHeight          60.0f
-#define npToolbarHeight          45.0f
+#define npToolbarHeight          50.0f
 #define kFunctionViewHeight 210.0f
 
 #import <UIKit/UIKit.h>
@@ -34,30 +34,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
-/**
- *  开始录音
- */
-- (void)startRecordVoice;
-
-/**
- *  取消录音
- */
-- (void)cancelRecordVoice;
-
-/**
- *  录音结束
- */
-- (void)endRecordVoice;
-
-/**
- *  更新录音显示状态,手指向上滑动后提示松开取消录音
- */
-- (void)updateCancelRecordVoice;
-
-/**
- *  更新录音状态,手指重新滑动到范围内,提示向上取消录音
- */
-- (void)updateContinueRecordVoice;
+- (void)startAudio;//开始录音
+- (void)stopAudio;//停止录音
+- (void)audition;//试听录音
+- (void)Stopaudition;//停止试听录音
+- (void)sendAudition:(NSInteger)time;//发送录音
+- (void)cancelAction;//取消录音
 
 /**
  *  chatBarFrame改变回调
@@ -78,7 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param videos 需要发送的视频信息
  */
-- (void)chatBar:(NPKeyboardView *)chatBar sendVideos:(NSArray *)videos;
+- (void)chatBar:(NPKeyboardView *)chatBar Message:(NSURL *)videoUrl coverImage:(UIImage *)coverImage duration:(CGFloat)duration;
 
 /**
  *  发送普通的文字信息,可能带有表情
@@ -86,14 +68,6 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param message 需要发送的文字信息
  */
 - (void)chatBar:(NPKeyboardView *)chatBar sendMessage:(NSString *)message;
-
-/**
- *  发送语音信息
- *
- *  @param voiceData 语音data数据
- *  @param seconds   语音时长
- */
-- (void)chatBar:(NPKeyboardView *)chatBar sendVoice:(NSString *)voiceFileName seconds:(NSTimeInterval)seconds;
 
 @end
 

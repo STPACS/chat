@@ -9,10 +9,11 @@
 #import "NPChatVideosTableViewCell.h"
 #import <Masonry.h>
 #import "NPChat.h"
+#import "NSDictionary+NP.h"
+#import <SDWebImage.h>
 
 @interface NPChatVideosTableViewCell ()
 
-@property (nonatomic, strong) UIImageView *thumbnailImageView;
 
 /**
  *  用来显示视频播放的UIImageView
@@ -28,11 +29,18 @@
 - (void)updateConstraints
 {
     [super updateConstraints];
+    
+    
+    [self.messageContentView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_offset(@160);
+    }];
+    
     [self.thumbnailImageView mas_makeConstraints:^(MASConstraintMaker *make)
     {
         make.edges.equalTo(self.messageContentView);
-        make.height.lessThanOrEqualTo(@200);
+        make.height.lessThanOrEqualTo(@160);
     }];
+    
     
     [self.boardcastImageView mas_makeConstraints:^(MASConstraintMaker *make)
      {
@@ -41,6 +49,8 @@
          make.height.mas_equalTo(@40);
          make.width.mas_equalTo(@40);
      }];
+
+    
 }
 
 #pragma mark - 公有方法
@@ -58,17 +68,18 @@
     
     NPMessageItem *item = data;
 
-     if ([item.image isKindOfClass:[NSString class]])
+     if ([item.attach isKindOfClass:[NSString class]])
        {
-           self.thumbnailImageView.image = [UIImage imageNamed:item.image];
+           NSDictionary *dic = [NSDictionary dictionaryWithJsonString:item.attach];
+
+           [self.thumbnailImageView sd_setImageWithURL:[NSURL URLWithString:[dic objectForKey:@"thumImage"]]];
        }
     
        else
        {
-           NSLog(@"未知的图片类型");
+           NSLog(@"未知的视频类型");
        }
 }
-
 
 #pragma mark - Setters方法
 
@@ -96,6 +107,14 @@
     }
 }
 
+//- (void)layoutSubviews{
+//    [super layoutSubviews];
+//    CALayer *layer              = self.messageContentBackgroundImageView.layer;
+//    layer.frame                 = (CGRect){{0,0},CGSizeMake(160, 160)};
+//    self.thumbnailImageView.layer.mask = layer;
+//    [self.thumbnailImageView setNeedsDisplay];
+//}
+
 #pragma mark - Getters方法
 
 - (UIImageView *)thumbnailImageView
@@ -115,10 +134,9 @@
     {
         _boardcastImageView = [[UIImageView alloc] init];
         _boardcastImageView.contentMode = UIViewContentModeScaleAspectFill;
-        _boardcastImageView.image = [UIImage imageNamed:@""];
+        _boardcastImageView.image = [UIImage imageNamed:@"action01"];
     }
     return _boardcastImageView;
-    
 }
 
 @end

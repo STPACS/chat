@@ -8,6 +8,7 @@
 //
 
 #import "NPChatMoreView.h"
+#import "Marco.h"
 
 @interface NPChatMoreView ()<UIScrollViewDelegate>
 
@@ -45,8 +46,11 @@
 
 - (void)reloadData{
     
-    CGFloat itemWidth = (self.scrollView.frame.size.width - self.edgeInsets.left - self.edgeInsets.right) / self.numberPerLine;
-    CGFloat itemHeight = self.scrollView.frame.size.height / 2;
+//    CGFloat itemWidth = (self.scrollView.frame.size.width - self.edgeInsets.left - self.edgeInsets.right - real(12)) / self.numberPerLine;
+
+    CGFloat itemWidth = real(169.5);
+
+    CGFloat itemHeight = real(62);
     self.itemSize = CGSizeMake(itemWidth, itemHeight);
     
     self.titleArray = [self.dataSource titlesOfMoreView:self];
@@ -68,9 +72,9 @@
 
 - (void)setup
 {
-    self.edgeInsets = UIEdgeInsetsMake(10, 10, 5, 10);
+    self.edgeInsets = UIEdgeInsetsMake(real(13), real(12), real(12), real(12));
     self.itemViewArray = [NSMutableArray array];
-    self.numberPerLine = 4;
+    self.numberPerLine = 2;
     
     [self addSubview:self.scrollView];
     [self addSubview:self.pageControl];
@@ -83,7 +87,7 @@
     __block NSUInteger page = 0;
     [self.titleArray enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop)
     {
-        if (column > 3)
+        if (column > 1)
         {
             line ++ ;
             column = 0;
@@ -96,8 +100,8 @@
             page ++ ;
         }
         
-        CGFloat startX = self.edgeInsets.left + column * self.itemSize.width + page * self.frame.size.width;
-        CGFloat startY = line * self.itemSize.height;
+        CGFloat startX = real(12) + column * self.itemSize.width + column * (real(12)) + page * self.frame.size.width;
+        CGFloat startY = line * self.itemSize.height  + line * real(12);
         
         NPChatMoreItem *item = [[NPChatMoreItem alloc] initWithFrame:CGRectMake(startX, startY, self.itemSize.width, self.itemSize.height)];
         [item fillViewWithTitle:obj imageName:self.imageNameArray[idx]];

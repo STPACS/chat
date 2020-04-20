@@ -17,10 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - 公有方法
 
 - (NPMessageSendState)messageSendStateForIndex:(NSUInteger)index;
-- (NPMessageReadState)messageReadStateForIndex:(NSUInteger)index;
 
 - (void)setMessageSendState:(NPMessageSendState)messageSendState forIndex:(NSUInteger)index;
-- (void)setMessageReadState:(NPMessageReadState)messageReadState forIndex:(NSUInteger)index;
 
 - (void)cleanState;
 @end
