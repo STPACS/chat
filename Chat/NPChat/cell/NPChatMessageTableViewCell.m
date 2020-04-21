@@ -120,28 +120,6 @@
     }];
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
-    [super touchesBegan:touches withEvent:event];
-    CGPoint touchPoint = [[touches anyObject] locationInView:self.contentView];
-    if (CGRectContainsPoint(self.messageContentView.frame, touchPoint))
-    {
-        self.messageContentBackgroundImageView.highlighted = YES;
-    }
-}
-
-- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
-    [super touchesCancelled:touches withEvent:event];
-    self.messageContentBackgroundImageView.highlighted = NO;
-}
-
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
-    [super touchesEnded:touches withEvent:event];
-    self.messageContentBackgroundImageView.highlighted = NO;
-}
-
 #pragma mark - 私有方法
 
 - (void)setup

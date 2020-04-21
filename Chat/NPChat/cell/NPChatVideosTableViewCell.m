@@ -9,8 +9,6 @@
 #import "NPChatVideosTableViewCell.h"
 #import <Masonry.h>
 #import "NPChat.h"
-#import "NSDictionary+NP.h"
-#import <SDWebImage.h>
 
 @interface NPChatVideosTableViewCell ()
 
@@ -105,15 +103,17 @@
         [self.messageProgressView removeFromSuperview];
         [self.messageCancelButton removeFromSuperview];
     }
+    
+    CGSize imageSize = CGSizeMake(160, 160);
+
+     UIImage *image = self.messageContentBackgroundImageView.image;
+     
+     UIImageView *imageViewMask = [[UIImageView alloc] initWithImage:image];
+     imageViewMask.frame = CGRectMake(0, 0, imageSize.width, imageSize.height);
+     self.thumbnailImageView.layer.mask = imageViewMask.layer;
 }
 
-//- (void)layoutSubviews{
-//    [super layoutSubviews];
-//    CALayer *layer              = self.messageContentBackgroundImageView.layer;
-//    layer.frame                 = (CGRect){{0,0},CGSizeMake(160, 160)};
-//    self.thumbnailImageView.layer.mask = layer;
-//    [self.thumbnailImageView setNeedsDisplay];
-//}
+
 
 #pragma mark - Getters方法
 

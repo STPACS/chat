@@ -389,12 +389,12 @@
 				04603EF4244DA5E500C7A6D0 /* NPChatVideosTableViewCell.m */,
 				04603EF5244DA5E500C7A6D0 /* NPDateTimeTableViewCell.h */,
 				04603EF6244DA5E500C7A6D0 /* NPChatImagesTableViewCell.h */,
+				04603EFC244DA5E500C7A6D0 /* NPChatImagesTableViewCell.m */,
 				04603EF7244DA5E500C7A6D0 /* NPChatTextsTableViewCell.m */,
 				04603EF8244DA5E500C7A6D0 /* NPChatMessageTableViewCell.h */,
 				04603EF9244DA5E500C7A6D0 /* NPChatVoicesTableViewCell.m */,
 				04603EFA244DA5E500C7A6D0 /* NPDateTimeTableViewCell.m */,
 				04603EFB244DA5E500C7A6D0 /* NPChatVideosTableViewCell.h */,
-				04603EFC244DA5E500C7A6D0 /* NPChatImagesTableViewCell.m */,
 			);
 			path = cell;
 			sourceTree = "<group>";

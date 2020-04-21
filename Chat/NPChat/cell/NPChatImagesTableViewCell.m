@@ -12,14 +12,17 @@
 
 @interface NPChatImagesTableViewCell()
 
-
 @end
 
 @implementation NPChatImagesTableViewCell
 
-- (void)updateConstraints
+#pragma mark - 公有方法
+
+- (void)setup
 {
-    [super updateConstraints];
+    [self.messageContentView addSubview:self.messageImageView];
+
+    [super setup];
     
     [self.messageContentView mas_updateConstraints:^(MASConstraintMaker *make)
     {
@@ -31,23 +34,8 @@
         make.edges.equalTo(self.messageContentView);
         make.height.lessThanOrEqualTo(@150);
     }];
-}
 
-//- (void)layoutSubviews{
-//    [super layoutSubviews];
-//    CALayer *layer              = self.messageContentBackgroundImageView.layer;
-//    layer.frame                 = self.messageImageView.frame;
-//    self.messageImageView.layer.mask = layer;
-//  
-//}
-
-#pragma mark - 公有方法
-
-- (void)setup
-{
-    [self.messageContentView addSubview:self.messageImageView];
-
-    [super setup];
+   
 }
 
 - (void)configureCellWithData:(id)data
@@ -67,10 +55,15 @@
     {
         NSLog(@"未知的图片类型");
     }
-    
-    
-}
 
+    CGSize imageSize = CGSizeMake(150, 150);
+
+    UIImage *image = self.messageContentBackgroundImageView.image;
+    
+    UIImageView *imageViewMask = [[UIImageView alloc] initWithImage:image];
+    imageViewMask.frame = CGRectMake(0, 0, imageSize.width, imageSize.height);
+    self.messageImageView.layer.mask = imageViewMask.layer;
+}
 
 #pragma mark - Setters方法
 

@@ -383,6 +383,33 @@
 {
     //先上传OSS
 
+    CGSize size = CGSizeMake(100, 100);
+    
+    NSString *url = [NSString stringWithFormat:@"%@?w=%.1f&h=%.1f",@"https://cdn-test.lajsf.com/nutrition-plan/image/ios/20209223372036854775807/128BF67B-0724-4A2A-95B5-FC50F48CEF9E.jpg?w=414.0&h=310.0",size.width,size.height];
+             
+    NSMutableDictionary *attach = [NSMutableDictionary dictionary];
+    [attach setObject:@"" forKey:@"md5"];
+    [attach setObject:[NSString stringWithFormat:@"%f",size.height] forKey:@"h"];
+    [attach setObject:[NSString stringWithFormat:@"%f",size.width] forKey:@"w"];
+    [attach setObject:@"" forKey:@"size"];
+    [attach setObject:@"PICTURE" forKey:@"name"];
+    [attach setObject:url forKey:@"url"];
+    [attach setObject:@"jpg" forKey:@"ext"];
+
+    NSString *con_attach = [NSString convertToJsonData:attach];
+    
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NPMessageItem *model = [[NPMessageItem alloc]init];
+        model.owner = MessageOwnerSelf;
+        model.body = url;
+        model.attach = con_attach;
+        model.msgType = @"PICTURE";
+        model.fromAccount = [NSString stringWithFormat:@"%@",@""];
+        [self addMessage:model];
+        
+    });
+    
     /*
     if (pictures.count > 0) {
         UIImage *image = pictures[0];
