@@ -1,1 +1,0 @@
-../../../UIImage+SKYExtension/UIImageCategory/UIImage+SKYExtension.h

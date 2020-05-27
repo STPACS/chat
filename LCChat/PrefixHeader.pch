@@ -1,0 +1,33 @@
+//
+//  PrefixHeader.pch
+//  LCChat
+//
+//  Created by mac on 2020/5/27.
+//  Copyright © 2020 mac. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#ifdef __OBJC__
+#import <UIKit/UIKit.h>
+
+#import "NIMKit.h"
+#import "NSString+NTES.h"
+#import "Header.h"
+#import "NIMMediaManagerProtocol.h"
+#import "UIView+NTES.h"
+#import "NTESGlobalMacro.h"
+
+
+#endif
+
+
+#import <CocoaLumberjack/CocoaLumberjack.h>
+
+#ifdef DEBUG
+static DDLogLevel ddLogLevel = DDLogLevelVerbose;
+#else
+static DDLogLevel ddLogLevel = DDLogLevelInfo;
+#endif
+#endif /* PrefixHeader_pch */
