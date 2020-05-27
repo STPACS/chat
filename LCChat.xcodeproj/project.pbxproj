@@ -251,11 +251,11 @@
 		04E5F7F4247E34D500AB543A /* NPSessionChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E5F7F3247E34D500AB543A /* NPSessionChatViewController.m */; };
 		04E5F7F7247E35D400AB543A /* NTESSessionConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E5F7F6247E35D400AB543A /* NTESSessionConfig.m */; };
 		04E5F7FA247E360B00AB543A /* NTESBundleSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E5F7F8247E360A00AB543A /* NTESBundleSetting.m */; };
-		04E5F811247E3DB000AB543A /* UIViewController+Swizzling.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E5F803247E3DB000AB543A /* UIViewController+Swizzling.m */; };
-		04E5F813247E3DB000AB543A /* UINavigationController+Swizzling.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E5F806247E3DB000AB543A /* UINavigationController+Swizzling.m */; };
-		04E5F816247E3DB000AB543A /* NTESNavigationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E5F810247E3DB000AB543A /* NTESNavigationHandler.m */; };
 		04E5F81A247E422700AB543A /* NTESMulSelectFunctionBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E5F818247E422600AB543A /* NTESMulSelectFunctionBar.m */; };
 		04E5F81F247E46DE00AB543A /* NIMDemoChartlet.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 04E5F81E247E46DE00AB543A /* NIMDemoChartlet.bundle */; };
+		04E5FD06247E4B2D00AB543A /* UINavigationController+Swizzling.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E5FD00247E4B2D00AB543A /* UINavigationController+Swizzling.m */; };
+		04E5FD07247E4B2D00AB543A /* NTESNavigationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E5FD02247E4B2D00AB543A /* NTESNavigationHandler.m */; };
+		04E5FD08247E4B2D00AB543A /* UIViewController+Swizzling.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E5FD03247E4B2D00AB543A /* UIViewController+Swizzling.m */; };
 		E6FA728FC14DF26D07F71269 /* libPods-LCChat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 877EE830282D6965787D2A49 /* libPods-LCChat.a */; };
 /* End PBXBuildFile section */
 
@@ -805,17 +805,17 @@
 		04E5F7F6247E35D400AB543A /* NTESSessionConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NTESSessionConfig.m; sourceTree = "<group>"; };
 		04E5F7F8247E360A00AB543A /* NTESBundleSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTESBundleSetting.m; sourceTree = "<group>"; };
 		04E5F7F9247E360B00AB543A /* NTESBundleSetting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTESBundleSetting.h; sourceTree = "<group>"; };
-		04E5F803247E3DB000AB543A /* UIViewController+Swizzling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Swizzling.m"; sourceTree = "<group>"; };
-		04E5F806247E3DB000AB543A /* UINavigationController+Swizzling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+Swizzling.m"; sourceTree = "<group>"; };
-		04E5F809247E3DB000AB543A /* SwizzlingDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwizzlingDefine.h; sourceTree = "<group>"; };
-		04E5F80A247E3DB000AB543A /* UIViewController+Swizzling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Swizzling.h"; sourceTree = "<group>"; };
-		04E5F80B247E3DB000AB543A /* UINavigationController+Swizzling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+Swizzling.h"; sourceTree = "<group>"; };
-		04E5F80E247E3DB000AB543A /* NTESNavigationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTESNavigationHandler.h; sourceTree = "<group>"; };
-		04E5F810247E3DB000AB543A /* NTESNavigationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTESNavigationHandler.m; sourceTree = "<group>"; };
 		04E5F817247E3E1700AB543A /* NTESGlobalMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NTESGlobalMacro.h; sourceTree = "<group>"; };
 		04E5F818247E422600AB543A /* NTESMulSelectFunctionBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTESMulSelectFunctionBar.m; sourceTree = "<group>"; };
 		04E5F819247E422600AB543A /* NTESMulSelectFunctionBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTESMulSelectFunctionBar.h; sourceTree = "<group>"; };
 		04E5F81E247E46DE00AB543A /* NIMDemoChartlet.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = NIMDemoChartlet.bundle; sourceTree = "<group>"; };
+		04E5FCFF247E4B2400AB543A /* NTESNavigationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTESNavigationHandler.h; sourceTree = "<group>"; };
+		04E5FD00247E4B2D00AB543A /* UINavigationController+Swizzling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+Swizzling.m"; sourceTree = "<group>"; };
+		04E5FD01247E4B2D00AB543A /* SwizzlingDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwizzlingDefine.h; sourceTree = "<group>"; };
+		04E5FD02247E4B2D00AB543A /* NTESNavigationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTESNavigationHandler.m; sourceTree = "<group>"; };
+		04E5FD03247E4B2D00AB543A /* UIViewController+Swizzling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Swizzling.m"; sourceTree = "<group>"; };
+		04E5FD04247E4B2D00AB543A /* UINavigationController+Swizzling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+Swizzling.h"; sourceTree = "<group>"; };
+		04E5FD05247E4B2D00AB543A /* UIViewController+Swizzling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Swizzling.h"; sourceTree = "<group>"; };
 		34A8229EDD12D4E7E8EFEEB5 /* Pods-LCChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LCChat.debug.xcconfig"; path = "Target Support Files/Pods-LCChat/Pods-LCChat.debug.xcconfig"; sourceTree = "<group>"; };
 		8236531883A1F759FB6DAE7C /* Pods-LCChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LCChat.release.xcconfig"; path = "Target Support Files/Pods-LCChat/Pods-LCChat.release.xcconfig"; sourceTree = "<group>"; };
 		877EE830282D6965787D2A49 /* libPods-LCChat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LCChat.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1207,8 +1207,13 @@
 		04E5F46B247DF29800AB543A /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				04E5F802247E3DB000AB543A /* Addons */,
-				04E5F80C247E3DB000AB543A /* Delegate */,
+				04E5FD02247E4B2D00AB543A /* NTESNavigationHandler.m */,
+				04E5FD01247E4B2D00AB543A /* SwizzlingDefine.h */,
+				04E5FD04247E4B2D00AB543A /* UINavigationController+Swizzling.h */,
+				04E5FD00247E4B2D00AB543A /* UINavigationController+Swizzling.m */,
+				04E5FD05247E4B2D00AB543A /* UIViewController+Swizzling.h */,
+				04E5FD03247E4B2D00AB543A /* UIViewController+Swizzling.m */,
+				04E5FCFF247E4B2400AB543A /* NTESNavigationHandler.h */,
 				04E5F46D247DF29E00AB543A /* NTESBadgeView.h */,
 				04E5F46C247DF29E00AB543A /* NTESBadgeView.m */,
 			);
@@ -1796,29 +1801,6 @@
 			path = session;
 			sourceTree = "<group>";
 		};
-		04E5F802247E3DB000AB543A /* Addons */ = {
-			isa = PBXGroup;
-			children = (
-				04E5F80A247E3DB000AB543A /* UIViewController+Swizzling.h */,
-				04E5F803247E3DB000AB543A /* UIViewController+Swizzling.m */,
-				04E5F809247E3DB000AB543A /* SwizzlingDefine.h */,
-				04E5F80B247E3DB000AB543A /* UINavigationController+Swizzling.h */,
-				04E5F806247E3DB000AB543A /* UINavigationController+Swizzling.m */,
-			);
-			name = Addons;
-			path = ../../../../Downloads/NIM_iOS_Demo_v7/NIMDemo/NIMDemo/Classes/Common/Addons;
-			sourceTree = "<group>";
-		};
-		04E5F80C247E3DB000AB543A /* Delegate */ = {
-			isa = PBXGroup;
-			children = (
-				04E5F80E247E3DB000AB543A /* NTESNavigationHandler.h */,
-				04E5F810247E3DB000AB543A /* NTESNavigationHandler.m */,
-			);
-			name = Delegate;
-			path = ../../../../Downloads/NIM_iOS_Demo_v7/NIMDemo/NIMDemo/Classes/Common/Delegate;
-			sourceTree = "<group>";
-		};
 		0ED294A5C5B98391CADB3197 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -2068,7 +2050,6 @@
 				04E5F786247DF7A700AB543A /* NIMTeamCardSelectedViewController.m in Sources */,
 				04E5F417247D145300AB543A /* NPSecondViewController.m in Sources */,
 				04E5F449247DE8C800AB543A /* NTESDevice.m in Sources */,
-				04E5F811247E3DB000AB543A /* UIViewController+Swizzling.m in Sources */,
 				04E5F43B247DE8A700AB543A /* UIImage+NTES.m in Sources */,
 				04E5F7AD247DF7A700AB543A /* NIMSessionDataSourceImpl.m in Sources */,
 				04E5F32F247C9AA800AB543A /* NIMNotificationObject.m in Sources */,
@@ -2126,7 +2107,6 @@
 				04E5F3DB247CC0D000AB543A /* NIMRobot.m in Sources */,
 				04E5F78A247DF7A700AB543A /* NIMAdvancedTeamCardViewController.m in Sources */,
 				04E5F3CF247CC06200AB543A /* NIMSubscribeEvent.m in Sources */,
-				04E5F813247E3DB000AB543A /* UINavigationController+Swizzling.m in Sources */,
 				04E5F796247DF7A700AB543A /* NIMTeamMemberListCell.m in Sources */,
 				04E5F75D247DF7A700AB543A /* NIMContactDataCell.m in Sources */,
 				04E5F43C247DE8A700AB543A /* UIView+NTES.m in Sources */,
@@ -2145,6 +2125,7 @@
 				04E5F367247C9F3800AB543A /* NIMUser.m in Sources */,
 				04E5F78F247DF7A700AB543A /* NIMTeamCardRowItem.m in Sources */,
 				04E5F7B7247DF7A700AB543A /* NIMMessageCellFactory.m in Sources */,
+				04E5FD08247E4B2D00AB543A /* UIViewController+Swizzling.m in Sources */,
 				04E5F31C247C991A00AB543A /* NIMImageObject.m in Sources */,
 				04E5F3E4247CC12A00AB543A /* NIMSignalingRequest.m in Sources */,
 				04E5F777247DF7A700AB543A /* NIMMemberGroupView.m in Sources */,
@@ -2176,6 +2157,7 @@
 				04E5F43D247DE8A700AB543A /* NSString+NTES.m in Sources */,
 				04E5F75E247DF7A700AB543A /* NIMContactPickedView.m in Sources */,
 				04E5F411247D11B400AB543A /* NPViewController.m in Sources */,
+				04E5FD07247E4B2D00AB543A /* NTESNavigationHandler.m in Sources */,
 				04E5F392247CB6F600AB543A /* NIMMessageSearchOption.m in Sources */,
 				04E5F79F247DF7A700AB543A /* NIMKitInfo.m in Sources */,
 				04E5F469247DF28200AB543A /* NTESUserListCell.m in Sources */,
@@ -2183,7 +2165,6 @@
 				04E5F7BD247DF7A700AB543A /* NIMSessionNotificationContentView.m in Sources */,
 				04E5F7D9247DF7A700AB543A /* NIMKit.m in Sources */,
 				04E5F3AA247CBB7D00AB543A /* NIMChatroomQueueRequest.m in Sources */,
-				04E5F816247E3DB000AB543A /* NTESNavigationHandler.m in Sources */,
 				04E5F444247DE8A700AB543A /* UIScrollView+NTESDirection.m in Sources */,
 				04E5F771247DF7A700AB543A /* NIMInputToolBar.m in Sources */,
 				04E5F7BE247DF7A700AB543A /* NIMSessionNetChatNotifyContentView.m in Sources */,
@@ -2215,6 +2196,7 @@
 				04E5F3A7247CBB6500AB543A /* NIMChatroomUpdateRequest.m in Sources */,
 				04E5F3F5247CC30D00AB543A /* NIMRedPacketRequest.m in Sources */,
 				04E5F46E247DF29F00AB543A /* NTESBadgeView.m in Sources */,
+				04E5FD06247E4B2D00AB543A /* UINavigationController+Swizzling.m in Sources */,
 				04E5F359247C9C7000AB543A /* NIMTeamMessageReceipt.m in Sources */,
 				04E5F76E247DF7A700AB543A /* NIMInputEmoticonTabView.m in Sources */,
 				04E5F759247DF7A700AB543A /* NIMContactDataItem.m in Sources */,
@@ -2440,7 +2422,7 @@
 					"$(PROJECT_DIR)/LCChat/Classes/Vendors/AlipaySDK",
 					"$(PROJECT_DIR)/LCChat/Classes/Vendors/RedPacket",
 				);
-				GCC_PREFIX_HEADER = /Users/mac/Desktop/LCChat/LCChat/PrefixHeader.pch;
+				GCC_PREFIX_HEADER = "${SRCROOT}/LCChat/PrefixHeader.pch";
 				INFOPLIST_FILE = LCChat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2469,7 +2451,7 @@
 					"$(PROJECT_DIR)/LCChat/Classes/Vendors/AlipaySDK",
 					"$(PROJECT_DIR)/LCChat/Classes/Vendors/RedPacket",
 				);
-				GCC_PREFIX_HEADER = /Users/mac/Desktop/LCChat/LCChat/PrefixHeader.pch;
+				GCC_PREFIX_HEADER = "${SRCROOT}/LCChat/PrefixHeader.pch";
 				INFOPLIST_FILE = LCChat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
